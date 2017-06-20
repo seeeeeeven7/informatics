@@ -11,9 +11,9 @@
 #include <queue>
 using namespace std;
 
-/* Below is my template */
+/* Template starts here */
  
-int mo = 1000000007; // This variable may be changed later
+long long mo = 1000000007; // This variable may be changed later
 
 #define ios_sync_false ios_base::sync_with_stdio(false)
 
@@ -252,7 +252,7 @@ long long vers(long long p) {
 }
 
 long long comb(long long n, long long m) {
-	return fac(n) * vers(fac(n - m)) % mo * vers(fac(m)) % mo;
+	return ((fac(n) * vers(fac(n - m))) % mo * vers(fac(m))) % mo;
 }
 
 long long perm(long long n, long long m) {
@@ -260,7 +260,7 @@ long long perm(long long n, long long m) {
 }
 
 
-/* Main logic start here */
+/* Code starts here */
 
 int main() {
 	ios_sync_false;
