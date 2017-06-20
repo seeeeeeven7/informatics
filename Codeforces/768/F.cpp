@@ -269,24 +269,27 @@ int main() {
 
  	long long f, w, h;
  	cin >> f >> w >> h;
-
- 	long long p = 0;
- 	for (long long i = 1; i < f + 2; i++) {
- 		long long s = comb(f + 1, i);
- 		if (i * (h + 1) <= w) {
- 			s = s * comb(w - (h + 1) * i + i - 1, i - 1) % mo;
- 		}
- 		else {
- 			s = 0;
- 		}
- 		p = (p + s) % mo;
+ 	
+ 	if (w == 0) cout << 1 << endl;
+ 	else {
+ 		long long p = 0;
+	 	for (long long i = 1; i < f + 2; i++) {
+	 		long long s = comb(f + 1, i);
+	 		if (i * (h + 1) <= w) {
+	 			s = s * comb(w - (h + 1) * i + i - 1, i - 1) % mo;
+	 		}
+	 		else {
+	 			s = 0;
+	 		}
+	 		p = (p + s) % mo;
+	 	}
+	
+	 	long long q = fac(w + f);
+	 	q = (q * vers(fac(w))) % mo;
+	 	q = (q * vers(fac(f))) % mo;
+	
+	 	cout << p * vers(q) % mo << endl;
  	}
 
- 	long long q = fac(w + f);
- 	q = (q * vers(fac(w))) % mo;
- 	q = (q * vers(fac(f))) % mo;
-
- 	cout << p * vers(q) % mo << endl;
- 	
 	return 0;
 }
