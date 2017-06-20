@@ -11,9 +11,11 @@
 #include <queue>
 using namespace std;
 
-/* --------------------------------- */
+/* Template starts here */
  
-#define ios ios_base::sync_with_stdio(false)
+long long mo = 1000000007; // This variable may be changed later
+
+#define ios_sync_false ios_base::sync_with_stdio(false)
 
 const int MAXINT = 2147483647;
 
@@ -142,11 +144,11 @@ vector<int> string2vector(string str) {
 
 vector<int> mul(vector<int> a, vector<int> b) {
 	vector<int> ret(a.size() + b.size() - 1, 0);
-	for (int i = 0; i < a.size(); i++)
-		for (int j = 0; j < b.size(); j++) {
+	for (unsigned int i = 0; i < a.size(); i++)
+		for (unsigned int j = 0; j < b.size(); j++) {
 			ret[i + j] += a[i] * b[j];
 		}
-	for (int i = 0; i < ret.size(); i++) {
+	for (unsigned int i = 0; i < ret.size(); i++) {
 		if (ret[i] >= 10) {
 			if (i == ret.size() - 1) ret.push_back(0);
 			ret[i + 1] += ret[i] / 10;
@@ -161,18 +163,11 @@ void print(vector<int> a) {
 	for (int i = a.size() - 1; i >= 0; i--) cout << a[i];
 }
 
-long long pow(long long a, long long b, long long mo) {
-	if (b == 1) return a;
-	long long m = pow(a, b / 2, mo);
-	m = (m * m) % mo;
-	if (b % 2 == 1) m = (m * a) % mo;
-	return m;
-}
-
 long long cross(pair<long long, long long> a, pair<long long, long long> b, pair<long long, long long> c) {
 	return (b.first - a.first) * (c.second - a.second) - (c.first - a.first) * (b.second - a.second);
 }
 
+// Trie templates 
 int cnt = 0;
 class TrNode {
 public:
@@ -188,7 +183,7 @@ public:
 	}
 	void addStr(string str) {
 		TrNode *rt = this;
-		for (int i = 0; i < str.length(); i++) {
+		for (unsigned int i = 0; i < str.length(); i++) {
 			if (rt -> next[str[i] - 'a'] == NULL) {
 				rt -> next[str[i] - 'a'] = new TrNode(26, this);	
 			}
@@ -199,7 +194,7 @@ public:
 	void buildGraph() {
 		queue<TrNode *> Q;
 		pre = this;
-		for (int i = 0; i < next.size(); i++) {
+		for (unsigned int i = 0; i < next.size(); i++) {
 			if (next[i] != NULL) {
 				Q.push(next[i]);
 				next[i] -> pre = this;
@@ -208,7 +203,7 @@ public:
 		}
 		while (!Q.empty()) {
 			TrNode *rt = Q.front(); Q.pop();
-			for (int i = 0; i < rt -> next.size(); i ++) {
+			for (unsigned int i = 0; i < rt -> next.size(); i ++) {
 				if (rt -> next[i] != NULL) {
 					Q.push(rt -> next[i]);
 					rt -> next[i] -> pre = rt -> pre -> next[i];
@@ -223,7 +218,7 @@ public:
 		queue<TrNode *> Q; Q.push(this);
 		while (!Q.empty()) {
 			TrNode *rt = Q.front(); Q.pop();
-			for (int i = 0; i < rt -> next.size(); i ++) {
+			for (unsigned int i = 0; i < rt -> next.size(); i ++) {
 				if (rt -> next[i] != NULL) {
 					cout << rt -> no << ' ' << (char)('a' + i) << ' ' << rt -> next[i] -> no << endl;
 					if (s.find(rt -> next[i] -> no) == s.end()) {
@@ -236,12 +231,39 @@ public:
 	}
 };
 
-/* --------------------------------- */
+long long pow(long long a, long long b) {
+	if (b == 1) return a;
+	long long c = pow(a, b / 2);
+	c = (c * c) % mo;
+	if (b & 1) c = (c * a) % mo;
+	return c;
+}
 
+vector<long long> fac_f(1, 1);
+long long fac(long long n) {
+	while (fac_f.size() <= (unsigned long long) n) {
+		fac_f.push_back(fac_f[fac_f.size() - 1] * fac_f.size() % mo);
+	}
+	return fac_f[n];
+}
+
+long long vers(long long p) {
+	return pow(p, mo - 2);
+}
+
+long long comb(long long n, long long m) {
+	return ((fac(n) * vers(fac(n - m))) % mo * vers(fac(m))) % mo;
+}
+
+long long perm(long long n, long long m) {
+	return fac(n) * vers(fac(m)) % mo;
+}
+
+
+/* Code starts here */
 
 int main() {
-	ios;
-	
-	
+	ios_sync_false;
+ 	
 	return 0;
 }
