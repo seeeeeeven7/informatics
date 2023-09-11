@@ -266,9 +266,33 @@ int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-    freopen(".in", "r", stdin);
-    freopen(".out", "w", stdout);
+    freopen("C.in", "r", stdin);
+    freopen("C.out", "w", stdout);
 #endif
+
+	vector<bool> b(10000, false);
+	vector<int> a;
+	for (int i = 2; i * i <= 10000000; i++) {
+		if (!b[i]) {
+			for (int j = i * i; j <= 10000000 / j; j += i) b[j] = true;	
+			a.push_back(i);
+		}
+	}
+
+	int tasks; cin >> tasks;
+	while (tasks --) {
+		int l, r;
+		cin >> l >> r;
+		bool hit = false;
+		for (int n = l; n <= r && (!hit); n ++) {
+			for (int i = 0; i < a.size() && (!hit) && a[i] < n; i++)
+				if (n % a[i] == 0) {
+					hit = true;
+					cout << a[i] << ' ' << n - a[i] << endl;
+				}
+		}
+		if (!hit) cout << -1 << endl;
+	}
  	
 	return 0;
 }

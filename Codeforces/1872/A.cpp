@@ -262,13 +262,24 @@ long long perm(long long n, long long m) {
 
 /* Code starts here */
 
+int abs(int x) {
+	if (x < 0) return -x;
+	else return x;
+}
+
 int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-    freopen(".in", "r", stdin);
-    freopen(".out", "w", stdout);
+    freopen("A.in", "r", stdin);
+    freopen("A.out", "w", stdout);
 #endif
- 	
+
+	int tasks; cin >> tasks;
+	while (tasks --) {
+		int a, b, c;
+		cin >> a >> b >> c;
+		cout << ceil(1.0 * abs(a - b) / c / 2) << endl;
+	}
 	return 0;
 }

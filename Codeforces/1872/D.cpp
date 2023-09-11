@@ -262,13 +262,29 @@ long long perm(long long n, long long m) {
 
 /* Code starts here */
 
+long long gcd(long long a, long long b) {
+	if (a % b == 0) return b;
+	else return gcd(b, a % b);
+}
+
 int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-    freopen(".in", "r", stdin);
-    freopen(".out", "w", stdout);
+    freopen("D.in", "r", stdin);
+    freopen("D.out", "w", stdout);
 #endif
- 	
+
+	int tasks; cin >> tasks;
+	while (tasks --) {
+		long long n, a, b; cin >> n >> a >> b;
+		long long l = n / a, r = n / b;
+//		cout << a << ' ' << b << ' ' << gcd(a, b) << endl;
+		l -= n / a / (b / gcd(a, b));
+		r -= n / a / (b / gcd(a, b));
+//		cout << l << ' ' << r << endl;
+		long long sum = (n + n - l + 1) * l / 2 - (r + 1) * r / 2;
+		cout << sum << endl;
+	}
 	return 0;
 }

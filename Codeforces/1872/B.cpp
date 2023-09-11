@@ -266,9 +266,20 @@ int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-    freopen(".in", "r", stdin);
-    freopen(".out", "w", stdout);
+    freopen("B.in", "r", stdin);
+    freopen("B.out", "w", stdout);
 #endif
+
+	int tasks; cin >> tasks;
+	while (tasks --) {
+		int n; cin >> n;
+		int ans = 2147483647;
+		while (n --) {
+			int a, b; cin >> a >> b;
+			ans = min(ans, a + (b - 1) / 2);	
+		}
+		cout << ans << endl;
+	}
  	
 	return 0;
 }

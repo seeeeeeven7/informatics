@@ -262,13 +262,49 @@ long long perm(long long n, long long m) {
 
 /* Code starts here */
 
+long long gcd(long long a, long long b) {
+	if (a % b == 0) return b;
+	else return gcd(b, a % b);
+}
+
 int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-    freopen(".in", "r", stdin);
-    freopen(".out", "w", stdout);
+    freopen("E.in", "r", stdin);
+    freopen("E.out", "w", stdout);
 #endif
- 	
+
+	int tasks; cin >> tasks;
+	while (tasks --) {
+		int n; cin >> n;
+		vector<int> a(n);
+		for (int i = 0; i < n; i++) cin >> a[i];
+		string b;
+		cin >> b;
+		int ans0 = 0, ans1 = 0;
+		vector<int> s(n + 1, 0);
+		for (int i = 0; i < n; i++) {
+			s[i + 1] = s[i] ^ a[i];
+			if (b[i] == '0') ans0 ^= a[i];
+			else ans1 ^= a[i];
+		}
+		int m; cin >> m;
+		while (m --) {
+//			cout << ans0 << ' ' << ans1 << endl;
+			int k; cin >> k;
+			if (k == 2) {
+				int p; cin >> p;
+				if (p == 0) cout << ans0 << ' ';
+				else cout << ans1 << ' ';
+			}
+			else {
+				int p, q; cin >> p >> q;
+				ans0 ^= (s[p - 1] ^ s[q]);
+				ans1 ^= (s[p - 1] ^ s[q]);
+			}
+		}
+		cout << endl;
+	}
 	return 0;
 }
