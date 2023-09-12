@@ -266,19 +266,36 @@ int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-    freopen(".in", "r", stdin);
-    freopen(".out", "w", stdout);
+//    freopen("E.in", "r", stdin);
+//    freopen("E.out", "w", stdout);
 #endif
 
 	int tasks; cin >> tasks;
 	while (tasks --) {
 		int n, k; cin >> n >> k;
+		int ans = 0, j;
 		if (n % k == 0) {
-			int ans = 0;
 			for (int i = 0; i < n / k; i++) {
-				int j;
-				cout << 1 + i * k; cout.flush();
-				cin >> 
+				cout << "? " << 1 + i * k << endl; cout.flush();
+				cin >> j;
+				ans ^= j;
+			}
+			cout << "! " << ans << endl;
+		}
+		else {
+			for (int i = 0; i < n / k - 1; i++) {
+				cout << "? " << 1 + i * k << endl; cout.flush();
+				cin >> j;
+				ans ^= j;
+			}
+			cout << "? " << 1 + (n / k - 1) * k << endl; cout.flush();
+			cin >> j; ans ^= j;
+			cout << "? " << 1 + (n / k - 1) * k + (n % k) / 2 << endl; cout.flush();
+			cin >> j; ans ^= j;
+			cout << "? " << 1 + (n / k - 1) * k + (n % k) << endl; cout.flush();
+			cin >> j; ans ^= j;
+			cout << "! " << ans << endl;
+		}		
 	}
  	
 	return 0;
