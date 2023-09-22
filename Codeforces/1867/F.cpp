@@ -334,10 +334,10 @@ void res(int i, int f) {
 
 int main() {
 	ios_sync_false;
-	 	
+	cin.tie(0),cout.tie(0);
 #ifndef ONLINE_JUDGE
-    freopen("F.in", "r", stdin);
-//    freopen("E.out", "w", stdout);
+    freopen("F2.in", "r", stdin);
+    freopen("F2.out", "w", stdout);
 #endif
 
 	a.push_back(2);
