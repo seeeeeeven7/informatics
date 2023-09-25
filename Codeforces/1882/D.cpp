@@ -280,7 +280,7 @@ int dfs(int e) {
 	for (auto j : a[i]) if (b[j].second != p) {
 		int sz = dfs(j);
 		size += sz;
-		f[e] += sz * (s[i] ^ s[b[j].second]);
+		f[e] += 1LL * sz * (s[i] ^ s[b[j].second]) + f[j];
 	}
 //	cout << p << ' ' << i << ' ' <<f[e] <<endl;
 	c[e] = size;
@@ -312,7 +312,7 @@ int main() {
 		memset(c, 255, sizeof(c));
 		for (int i = 1; i <= n; i++) {
 			long long sum = 0;
-			for (auto j : a[i]) sum += dfs(j) * (s[i] ^ s[b[j].second]) + f[j];
+			for (auto j : a[i]) sum += 1LL * dfs(j) * (s[i] ^ s[b[j].second]) + f[j];
 			printf("%lld ", sum);
 		}
 		printf("\n");
