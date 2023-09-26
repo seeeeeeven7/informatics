@@ -295,12 +295,13 @@ int main() {
 //    freopen("D.in", "r", stdin);
     freopen("D1.in", "w", stdout);
 #endif
-
+	srand(time(0));
 	cout << 1 << endl;
 	int n = 200000;
 	cout << n <<endl;
-	for (int i = 0; i < n; i++) cout << rand() << ' '; cout << endl;
-	for (int i = 2; i <= n; i++) cout << rand() % (i - 1) + 1 << ' ' << i << endl;
+	for (int i = 0; i < n; i++) cout << (rand() * 10000 + rand()) % (1 << 20) << ' '; cout << endl;
+//	for (int i = n; i >= 2; i--) cout << i << ' '<< (rand() * 10000 + rand()) % (i - 1) + 1 << endl;
+	for (int i = n; i >= 2; i--) cout << i << ' '<< i - 1 << endl;
  	
 	return 0;
 }

@@ -9,6 +9,7 @@
 #include <string.h>
 #include <set>
 #include <queue>
+#pragma comment(linker, "/STACK:268435456");
 using namespace std;
 
 /* Template starts here */
@@ -262,60 +263,49 @@ long long perm(long long n, long long m) {
 
 /* Code starts here */
 
-const int m = 20;
-long long ans = -1;
-vector<vector<int>> a;
-pair<int, int> b[400010];
-int c[400010];
-int s[400010];
-long long f[400010];
+const int maxn = 200000 + 10;
+int a[maxn], b[3 * maxn], c[3 * maxn];
+int top = 0;
+int s[maxn];
+long long f[3 * maxn], g[3 * maxn];
 
-int dfs(int e) {
-	if (c[e] != -1) return c[e];	
-	int i = b[e].second;
-	int p = b[e].first;
-//	cout << p << ' ' << i << endl;
-	int size = 1;
-	f[e] = 0;
-	for (auto j : a[i]) if (b[j].second != p) {
-		int sz = dfs(j);
-		size += sz;
-		f[e] += 1LL * sz * (s[i] ^ s[b[j].second]) + f[j];
+void dfs(int p, int e) {
+	if (g[e] == -1) {
+//		cout << p << ' ' << e << endl;
+		f[e] = 0; g[e] = 1LL;
+		for (int j = a[b[e]]; j; j = c[j]) if (b[j] != p) {
+			dfs(b[e], j);
+			f[e] += 1LL * g[j] * (s[b[e]] ^ s[b[j]]) + f[j];
+			g[e] += g[j];
+		}	
+//		cout << p << ' ' << e << ' ' << f[e] << ' ' << g[e] << endl;
 	}
-//	cout << p << ' ' << i << ' ' <<f[e] <<endl;
-	c[e] = size;
-	return size;
 }
 
 int main() {
 	ios_sync_false;
+	cin.tie(0); cout.tie(0);
 	 	
 #ifndef ONLINE_JUDGE
-    freopen("D.in", "r", stdin);
-//    freopen("D1.out", "w", stdout);
+    freopen("D1.in", "r", stdin);
+    freopen("D1.out", "w", stdout);
 #endif
-
-	int tasks; scanf("%d", &tasks);
+	int tasks; cin >> tasks;
 	while (tasks --) {
-		int n; scanf("%d", &n);
-		for (int i = 1; i <= n; i++) scanf("%d", &s[i]);
-		a = vector<vector<int>>(n + 1, vector<int>());
-		for (int i = 1; i < n; i++) {
-			int p, q;
-			scanf("%d%d", &p, &q);
-			b[i * 2 - 2] = make_pair(p, q);
-			a[p].push_back(i * 2 - 2);
-			b[i * 2 - 1] = make_pair(q, p);
-			a[q].push_back(i * 2 - 1);
-		}
-//		cout << b.size() << endl;
-		memset(c, 255, sizeof(c));
+		int n; cin >> n;
+		for (int i = 1; i <= n; i++) cin >> s[i];
+		for (int i = 0; i <= n; i++) a[i] = 0;
+		top = 1;
 		for (int i = 1; i <= n; i++) {
-			long long sum = 0;
-			for (auto j : a[i]) sum += 1LL * dfs(j) * (s[i] ^ s[b[j].second]) + f[j];
-			printf("%lld ", sum);
+			b[top] = i; c[top] = a[0]; g[top] = -1; a[0] = top; top ++;
 		}
-		printf("\n");
+		for (int i = 1; i < n; i++) {
+			int p, q; cin >> p >> q;
+			b[top] = q; c[top] = a[p]; g[top] = -1; a[p] = top; top ++;
+			b[top] = p; c[top] = a[q]; g[top] = -1; a[q] = top; top ++;
+		}
+		for (int j = a[0]; j; j = c[j]) dfs(0, j);
+		for (int i = 1; i <= n; i++) cout << f[i] << ' '; cout << endl;
 	}
  	
 	return 0;
