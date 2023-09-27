@@ -272,34 +272,34 @@ int main() {
 
 	int tasks; cin >> tasks;
 	while (tasks --) {
-		int n, m; cin >> n >> m;
-		string a; cin >> a;
-		vector<int> l(m), r(m);
-		for (int i = 0; i < m; i++) cin >> l[i], l[i] --;
-		for (int i = 0; i < m; i++) cin >> r[i], r[i] --;
-		int t; cin >> t;
-		vector<int> x(t);
-		for (int i = 0; i < t; i++) cin >> x[i], x[i] --;
-		sort(x.begin(), x.end());
-		for (int i = 0, p = 0; i < m; i++) {
-			vector<int> y;
-			while (p < t && x[p] >= l[i] && x[p] <= r[i]) {
-//				cout << l[i] << ' ' << r[i] << ' ' << x[p] << endl;
-				y.push_back(min(x[p], l[i] + r[i] - x[p]));
-				y.push_back(max(x[p], l[i] + r[i] - x[p]) + 1);
-				p ++;
-			}
-			sort(y.begin(), y.end());
-//			for (int p : y) cout << p << ' '; cout << endl;
-			for (int j = l[i], k = 0, p = 0; j <= r[i]; j++) {
-				while (p < y.size() && y[p] <= j) {
-					k = k ^ 1;
-					p ++;
+		int n, m = 30; cin >> n;
+		vector<int> a(n);
+		for (int i = 0; i < n; i++) cin >> a[i];
+		vector<vector<int>> r(n, vector<int>(m + 1, 0));
+		for (int k = 0; k <= 30; k++) {
+			for (int l = n - 1, j = n - 1; l >= 0; l--) {
+				int s = (a[l] >> k) & 1;
+				if (s == 0) {
+					j = l - 1;
+					r[l][k] = -1;
 				}
-//				cout << j << ' ' << k << endl;
-				if (k == 0) cout << a[j];
-				else cout << a[l[i] + r[i] - j];
+				else r[l][k] = j;
+			}	
+//			for (int l = 0; l < n; l++) cout << r[l][k] << ' ';
+//			cout << endl;
+		}
+		int q; cin >> q;
+		while (q --) {
+			int ql, qk; cin >> ql >> qk; ql --;
+			int ans = -1, j = n - 1;
+			for (int k = 30; k >= 0; k--) {
+				int s = (qk >> k) & 1;
+				if (s == 0) ans = max(ans, min(j, r[ql][k]));
+				else j = min(j, r[ql][k]);
+//				cout << k << ' ' << ans << ' ' << j << ' ' << s << ' ' << r[ql][k] << endl;
 			}
+			if (j >= ql) ans = max(ans, j);
+			cout << (ans > -1 ? ans + 1 : -1) << ' ';
 		}
 		cout << endl;
 	}

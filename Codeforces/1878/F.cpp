@@ -262,43 +262,70 @@ long long perm(long long n, long long m) {
 
 /* Code starts here */
 
+vector<int> bo(1000, false);
+vector<int> pr;
+
+void f(vector<int> &a, vector<int> &b, int n, bool clear = false) {
+	if (clear) {
+		a.clear();
+		b.clear();
+	}
+	for (int i = 0; i < a.size(); i++)
+		while (n % a[i] == 0) {
+			n /= a[i];
+			b[i] ++;
+		}
+	for (int p : pr) {
+		int j = 0;
+		while (n % p == 0) {
+			j ++;
+			n /= p;
+		}
+		if (j) {
+			a.push_back(p);
+			b.push_back(j);
+		}
+	}
+	if (n > 1) {
+		a.push_back(n);
+		b.push_back(1);
+	}
+}
+
 int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-    freopen("D.in", "r", stdin);
+    freopen("F.in", "r", stdin);
 //    freopen(".out", "w", stdout);
 #endif
 
+	for (int i = 2; i < 1000; i++) if (!bo[i]) {
+		for (int j = i * i; j < 1000; j+=i) bo[j] = true;
+		pr.push_back(i);
+	}
+
 	int tasks; cin >> tasks;
 	while (tasks --) {
-		int n, m; cin >> n >> m;
-		string a; cin >> a;
-		vector<int> l(m), r(m);
-		for (int i = 0; i < m; i++) cin >> l[i], l[i] --;
-		for (int i = 0; i < m; i++) cin >> r[i], r[i] --;
-		int t; cin >> t;
-		vector<int> x(t);
-		for (int i = 0; i < t; i++) cin >> x[i], x[i] --;
-		sort(x.begin(), x.end());
-		for (int i = 0, p = 0; i < m; i++) {
-			vector<int> y;
-			while (p < t && x[p] >= l[i] && x[p] <= r[i]) {
-//				cout << l[i] << ' ' << r[i] << ' ' << x[p] << endl;
-				y.push_back(min(x[p], l[i] + r[i] - x[p]));
-				y.push_back(max(x[p], l[i] + r[i] - x[p]) + 1);
-				p ++;
+		int n, q; cin >> n >> q;
+		int n0 = n;
+		vector<int> a, b;
+		f(a, b, n, true);
+		while (q --) {	
+			int k; cin >> k;
+			if (k == 1) {
+				int x; cin >> x;
+				f(a, b, x);
+				int d = 1;
+				for (int i : b) d *= (i + 1);
+				bool ans = true;
+				for (int i = 0; i < a.size(); i++)
+					for (int j = 0; j < b[i] && (d % a[i] == 0); j++, d /= a[i]);
+				if (d == 1) cout << "YES" << endl;
+				else cout << "NO" << endl;
 			}
-			sort(y.begin(), y.end());
-//			for (int p : y) cout << p << ' '; cout << endl;
-			for (int j = l[i], k = 0, p = 0; j <= r[i]; j++) {
-				while (p < y.size() && y[p] <= j) {
-					k = k ^ 1;
-					p ++;
-				}
-//				cout << j << ' ' << k << endl;
-				if (k == 0) cout << a[j];
-				else cout << a[l[i] + r[i] - j];
+			else {
+				f(a, b, n, true);
 			}
 		}
 		cout << endl;
