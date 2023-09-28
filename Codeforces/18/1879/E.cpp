@@ -264,18 +264,65 @@ long long perm(long long n, long long m) {
 
 int n;
 
-void dfs(vector<vector<int>> &a, vector<int> &b, int i, int j, int k) {
-	for (int p = 0; p < a[i].size(); p++) {
-		b[a[i][p]] = (j + p) % k + 1;
-		dfs(a, b, a[i][p], b[a[i][p]], k);
+void dfs(vector<vector<int>> &a, vector<int> &b, int i, int j, int k, bool full) {
+	// cout << i << ' ' << j << ' ' << k << ' ' << full <<endl;
+	for (int p : a[i]) {
+		// cout << p << ' ' << a[p].size() << ' ' << j << endl;
+		if (full && a[p].size() + 1 == k) b[p] = k;
+		else b[p] = j = j % k + 1;
+		dfs(a, b, p, b[p], k, full);
 	}
+	// cout << i << ' ' << j << ' ' << k << ' ' << full <<endl;
+}
+
+bool painta(vector<vector<int>> &a, int k) {
+
+	for (int i = 2; i <= n; i++) if (1 + a[i].size() == k)
+		for (int j : a[i]) if (1 + a[j].size() == k) 
+			return false;
+	
+	vector<int> b(n + 1);
+	dfs(a, b, 1, 0, k, true);
+
+	cout << k << endl;
+	for (int i = 2; i <= n; i++) cout << b[i] << ' '; 
+	cout << endl;
+
+	int o;
+	vector<int> count(k + 1);
+	while (cin >> o) {
+		if (o != 0) break;
+		int mi1 = k + 1, ma1 = 0, ma0 = 0;
+		for (int i = 1, j; i <= k; i++) {
+			cin >> j;
+			if (j > 0) {
+				mi1 = min(mi1, i);
+				ma1 = max(ma1, i);
+			}
+			else {
+				ma0 = max(ma0, i);
+			}	
+		}
+		if (ma0 == 0) cout << k << endl;
+		else if (mi1 == 1) {
+			if (ma1 == k) cout << ma0 + 1 << endl;
+			else cout << 1 << endl;
+		}
+		else cout << mi1 << endl;
+		cout.flush();
+	}
+
+	return true;
 }
 
 void paintb(vector<vector<int>> &a, int k) {
 	vector<int> b(n + 1);
-	dfs(a, b, 1, 0, k);
+	dfs(a, b, 1, 0, k, false);
+
 	cout << k << endl;
-	for (int i = 2; i <=n ; i++) cout << b[i] << ' '; cout << endl;
+	for (int i = 2; i <= n; i++) cout << b[i] << ' '; 
+	cout << endl;
+
 	int o;
 	vector<int> count(k + 1);
 	while (cin >> o) {
@@ -312,15 +359,10 @@ int main() {
 	for (int i = 2, j; i <= n; i++) {
 		cin >> j; a[j].push_back(i);
 	}
-	int m = 0, s = 0;
-	for (int i = 2; i <= n; i++) {
-		if ((i > 1) + a[i].size() == m) s ++;
-		if ((i > 1) + a[i].size() > m) {
-			m = (i > 1) + a[i].size();
-			s = 1;
-		}
-	}
-	paintb(a, m + 1);
+	int m = 0;
+	for (int i = 2; i <= n; i++) m = max(m, (int)a[i].size() + 1);
+	if (!painta(a, m))
+		paintb(a, m + 1);
  	
 	return 0;
 }

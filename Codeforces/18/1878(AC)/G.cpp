@@ -18,7 +18,7 @@ long long mo = 1000000007; // This variable may be changed later
 #define ios_sync_false ios_base::sync_with_stdio(false)
 
 const int MAXINT = 2147483647;
-
+	
 const int dx4[4] = {0, 0, 1, -1};
 const int dy4[4] = {1, -1, 0, 0};
 const int dx8[8] = {0, 0, 1, 1, 1, -1, -1, -1};
@@ -371,7 +371,7 @@ int main() {
 	 	
 #ifndef ONLINE_JUDGE
     freopen("G.in", "r", stdin);
-//    freopen(".out", "w", stdout);
+	// freopen(".out", "w", stdout);
 #endif
 
 	int tasks; cin >> tasks;
