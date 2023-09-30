@@ -262,70 +262,59 @@ long long perm(long long n, long long m) {
 
 /* Code starts here */
 
-int cmp(pair<long long, long long> a, pair<long long, long long> b) {
-	return a.first > b.first;
-}
+const int maxp = 20;
 
-void merge(long long am1, long long ap1, long long am2, long long bm1, long long bp1, long long bm2, long long &cm1, long long &cp1, long long &cm2) {
-	vector<pair<long long, long long>> d;
-	d.push_back(make_pair(am1, ap1));
-	if (bp1 != ap1) d.push_back(make_pair(bm1, bp1));
-	d.push_back(make_pair(am2, -1));
-	d.push_back(make_pair(bm2, -1));
-	sort(d.begin(), d.end(), cmp);
-	cm1 = d[0].first;
-	cp1 = d[0].second;
-	cm2 = d[1].first;
+int cmp(long double a, long double b) { return a > b; }
+
+long double dp(vector<long double> &s) {
+	int m = s.size();
+	sort(s.begin(), s.end(), cmp);
+	// for (auto j : s) cout << j << ' ';
+	// cout << endl;
+	vector<vector<long double>> f(m + 2, vector<long double>(m + 2, 0));
+	for (int i = m; i >= 1; i--)
+		for (int j = 0; j < m - i + 1; j++) {
+			f[i][j] = 0;
+			if (j > 0) f[i][j] += f[i + 1][j - 1] * j / (m - i + 1);
+			f[i][j] += (s[i - 1] + f[i + 1][j + 1] * (m - i - j)) / (m - i + 1);
+			// cout << i << ' ' << j << ' ' << f[i][j] << endl;
+		}
+	return f[1][0];
 }
 
 int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-	freopen("F.in", "r", stdin);
-	freopen("F.out", "w", stdout);
+    freopen("E.in", "r", stdin);
+    freopen("E.out", "w", stdout);
 #endif
-	int tasks; cin >> tasks;
-	while (tasks --) {
-		int n; cin >> n;
-		vector<int> a(n), h(n);
-		for (int i = 0; i < n; i++) cin >> h[i];
-		for (int i = 0; i < n; i++) cin >> a[i];
-		int m = 0;
-		for (int i = 0; i < n; i++) m = max(m, a[i]);
-		int bits = 0;
-		while ((1 << (bits + 1)) <= m) bits ++;
-		cout << m << ' ' << bits << endl;
-		vector<vector<long long>> m1(m * 2 + 1, vector<long long>(bits, -1));
-		vector<vector<long long>> p1(m * 2 + 1, vector<long long>(bits, -1));
-		vector<vector<long long>> m2(m * 2 + 1, vector<long long>(bits, -1));
-		for (int i = 0; i < n; i++) merge(m1[a[i]][0], p1[a[i]][0], m2[a[i]][0], h[i], i, -1, m1[a[i]][0], p1[a[i]][0], m2[a[i]][0]);
-		for (int j = 1; j <= bits; j++) {
-			for (int i = 0; i <= m; i++) {
-				int k = i + (1 << (j - 1));
-				merge(
-					m1[i][j - 1], p1[i][j - 1], m2[i][j - 1], 
-					m1[k][j - 1], p1[k][j - 1], m2[k][j - 1], 
-					m1[i][j], p1[i][j], m2[i][j]
-					);
-			}
-		}
-		vector<long long> ans(n, 0);
-		for (long long x = 1, j = 0; x <= m; x ++) {
-			while ((1 << (j + 1)) <= x) j++;
-			long long dm1 = -1, dp1 = -1, dm2 = -1;
-			for (int hits = 1; hits <= (m - 1) / x + 1; hits ++) {
-				long long l = (hits - 1) * x + 1, r = hits * x - (1 << j) + 1;
-				long long cm1 = -1, cp1 = -1, cm2 = -1;
-				merge(m1[l][j], p1[l][j], m2[l][j], m1[r][j], p1[r][j], m2[r][j], cm1, cp1, cm2);
-				// cout << l << ' ' << r << ' ' << cm1 << ' ' << cp1 << ' ' << cm2 << endl;
-				merge(dm1, dp1, dm2, cm1 * hits, cp1, cm2 * hits, dm1, dp1, dm2);
-			}
-			// cout << x << ' ' << dm1 << ' ' << dp1 << ' ' << dm2 << endl;
-			ans[dp1] = max(ans[dp1], dm1 - max(dm2, 0LL));
-		}
-		for (long long i : ans) cout << i << ' ';
-		cout << endl;
-	}
+ 	
+    int tasks; cin >> tasks;
+    while (tasks --) {
+    	int n, m; cin >> n >> m;
+    	vector<vector<int>> a(n);
+    	vector<long double> f(n, 0.0);
+    	for (int i = 0, p, q; i < m; i++) {
+    		cin >> p >> q;
+    		a[p - 1].push_back(q - 1);
+    	}
+    	f[n - 1] = 1.0;
+
+    	for (int i = n - 2; i >= 0; i--) {
+    		if (a[i].size() == 0) {
+    			f[i] = 0;
+    		}
+    		else {
+    			vector<long double> s;
+    			for (int j : a[i]) 
+    				s.push_back(f[j]);
+    			f[i] = dp(s);
+    		}
+			// cout << "! " << i << ' ' <<f[i] << endl;
+    	}
+    	cout << fixed << std::setprecision(10) << f[0] << endl;
+    }
+
 	return 0;
 }
