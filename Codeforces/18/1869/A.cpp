@@ -15,13 +15,6 @@ using namespace std;
  
 long long mo = 1000000007; // This variable may be changed later
 
-#define ll long long
-#define pb push_back
-#define fi first
-#define se second
-#define pii pair<int,int>
-#define mp make_pair
-
 #define ios_sync_false ios_base::sync_with_stdio(false)
 
 const int MAXINT = 2147483647;
@@ -53,6 +46,14 @@ template<class T> string itos(T i) {
 	}
 	if (neg) ret = '-' + ret;
 	return ret;
+}
+
+bool updateType1(int &ans, int now) {
+	if (ans == -1 || ans > now) {
+		ans = now;
+		return true;
+	}
+	return false;
 }
 
 bool updateType1(long long &ans, long long now) {
@@ -265,13 +266,27 @@ int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-    freopen(".in", "r", stdin);
-    freopen(".out", "w", stdout);
+    freopen("A.in", "r", stdin);
+    // freopen(".out", "w", stdout);
 #endif
 
     int tasks; cin >> tasks;
     while (tasks --) {
-
+    	int n; cin >> n;
+    	if (n % 2 == 0) {
+    		cout << 2 << endl;
+    		cout << 1 << ' ' << n << endl;
+    		cout << 1 << ' ' << n << endl;
+    	}
+    	else {
+    		cout << 4 << endl; 
+    		cout << 1 << ' ' << n << endl;
+    		cout << 1 << ' ' << n - 1 << endl;
+    		cout << n - 1 << ' ' << n << endl;
+    		cout << n - 1 << ' ' << n << endl;
+    	}
+    	int j;
+    	while (n --) cin >> j;
     }
  	
 	return 0;

@@ -265,13 +265,26 @@ int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-    freopen(".in", "r", stdin);
-    freopen(".out", "w", stdout);
+    freopen("D.in", "r", stdin);
+    // freopen(".out", "w", stdout);
 #endif
 
     int tasks; cin >> tasks;
     while (tasks --) {
-
+    	int n; cin >> n;
+    	vector<int> a(n + 1);
+    	for (int i = 1; i <= n; i++) cin >> a[i];
+    	vector<int> s(n + 1); s[1] = 1;
+    	for (int i = 2; i <= n; i++) 
+    		s[i] = s[i - 1] + (a[i] >= a[i - 1]);
+    	vector<int> t(n + 1); t[n] = 1;
+    	for (int i = n - 1; i >= 1; i--)
+    		t[i] = t[i + 1] + (a[i] >= a[i + 1]);
+    	// for (int i = 1; i <= n; i++) cout << s[i] << ' '; cout <<endl;
+		// for (int i = 1; i <= n; i++) cout << t[i] << ' '; cout <<endl;
+    	int ans = min(s[n], t[1] - 1);
+		for (int i = 2; i <= n; i++) ans = min(ans, s[i - 1] + t[i] - 1);
+		cout << ans << endl;
     }
  	
 	return 0;

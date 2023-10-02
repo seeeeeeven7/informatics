@@ -15,13 +15,6 @@ using namespace std;
  
 long long mo = 1000000007; // This variable may be changed later
 
-#define ll long long
-#define pb push_back
-#define fi first
-#define se second
-#define pii pair<int,int>
-#define mp make_pair
-
 #define ios_sync_false ios_base::sync_with_stdio(false)
 
 const int MAXINT = 2147483647;
@@ -53,6 +46,14 @@ template<class T> string itos(T i) {
 	}
 	if (neg) ret = '-' + ret;
 	return ret;
+}
+
+bool updateType1(int &ans, int now) {
+	if (ans == -1 || ans > now) {
+		ans = now;
+		return true;
+	}
+	return false;
 }
 
 bool updateType1(long long &ans, long long now) {
@@ -261,17 +262,55 @@ long long perm(long long n, long long m) {
 
 /* Code starts here */
 
+const int maxn = 200000 + 10;
+
+long long x[maxn], y[maxn];
+
 int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-    freopen(".in", "r", stdin);
-    freopen(".out", "w", stdout);
+    freopen("C.in", "r", stdin);
+    freopen("C.out", "w", stdout);
 #endif
 
     int tasks; cin >> tasks;
     while (tasks --) {
-
+    	int n, m; cin >> n >> m;
+    	if (n >= m) {
+    		if (m == 1) cout << 0 << endl;
+    		else cout << m << endl;
+    		for (int i = 1; i <= n - m + 1; i++) {
+    			for (int j = 0; j < m; j++) cout << j << ' '; cout << endl;
+    		}
+    		for (int i = 0; i < m - 1; i++) {
+    			for (int j = 0; j < m; j++) cout << (i + j) % m << ' '; cout << endl;
+    		}
+    	}
+    	else {
+    		if (n == 1) {
+    			cout << 2 << endl;
+    			for (int j = 0; j < m; j++) cout << j << ' '; cout << endl;
+    		}
+    		else if (n == 2) {
+    			cout << 3 <<endl;
+    			for (int j = 0; j < m; j++) cout << j << ' '; cout << endl;
+    			cout << 2 << ' ' << 0 << ' ' << 1 << ' ';
+    			for (int j = 3; j < m; j++) cout << j << ' '; cout << endl;	
+    		}
+    		else {
+    			cout << n + 1 << endl;
+    			for (int i = 0; i < n - 1; i++) {
+	    			for (int j = 0; j < n; j++) cout << (i + j) % n << ' '; 
+	    			for (int j = n; j < m; j++) cout << j << ' ';
+					cout << endl;
+	    		}
+	    		cout << n - 2 << ' ' << 0 << ' ' << n - 1 << ' ';
+	    		for (int j = 3; j < n; j++) cout << (n - 2 + j) % n << ' ';
+	    		for (int j = n; j < m; j++) cout << j << ' ';
+	    		cout << endl;	
+    		}
+    	}
     }
  	
 	return 0;

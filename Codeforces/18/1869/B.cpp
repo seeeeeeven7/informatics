@@ -15,13 +15,6 @@ using namespace std;
  
 long long mo = 1000000007; // This variable may be changed later
 
-#define ll long long
-#define pb push_back
-#define fi first
-#define se second
-#define pii pair<int,int>
-#define mp make_pair
-
 #define ios_sync_false ios_base::sync_with_stdio(false)
 
 const int MAXINT = 2147483647;
@@ -53,6 +46,14 @@ template<class T> string itos(T i) {
 	}
 	if (neg) ret = '-' + ret;
 	return ret;
+}
+
+bool updateType1(int &ans, int now) {
+	if (ans == -1 || ans > now) {
+		ans = now;
+		return true;
+	}
+	return false;
 }
 
 bool updateType1(long long &ans, long long now) {
@@ -261,17 +262,32 @@ long long perm(long long n, long long m) {
 
 /* Code starts here */
 
+const int maxn = 200000 + 10;
+
+long long x[maxn], y[maxn];
+
 int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-    freopen(".in", "r", stdin);
-    freopen(".out", "w", stdout);
+    freopen("B.in", "r", stdin);
+    // freopen(".out", "w", stdout);
 #endif
 
     int tasks; cin >> tasks;
     while (tasks --) {
-
+    	int n, k, a, b; cin >> n >> k >> a >> b; a--; b--;
+    	for (int i = 0; i < n; i++) cin >> x[i] >> y[i];
+    	long long ans = abs(x[a] - x[b]) + abs(y[a] - y[b]);
+    	long long sum1 = -1, sum2 = -1;
+    	for (int i = 0; i < k; i++) {
+    		if (sum1 == -1 || sum1 > abs(x[a] - x[i]) + abs(y[a] - y[i])) sum1 = abs(x[a] - x[i]) + abs(y[a] - y[i]);
+    		if (sum2 == -1 || sum2 > abs(x[b] - x[i]) + abs(y[b] - y[i])) sum2 = abs(x[b] - x[i]) + abs(y[b] - y[i]);
+    		// cout << i << ' ' << sum1 << ' ' << sum2 <<endl;
+    		if (sum1 != -1 && sum2 != -1)
+    			ans = min(ans, sum1 + sum2);
+    	}
+    	cout << ans << endl;
     }
  	
 	return 0;
