@@ -267,17 +267,41 @@ long long perm(long long n, long long m) {
 
 /* Code starts here */
 
-int32 main() {
+int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-    freopen(".in", "r", stdin);
-    freopen(".out", "w", stdout);
+    freopen("A.in", "r", stdin);
+    // freopen(".out", "w", stdout);
 #endif
 
     int tasks; cin >> tasks;
     while (tasks --) {
-
+    	int n; cin >> n;
+    	vector<int> a(n);
+    	int m = 0, s = 0;
+    	for (int i = 0; i < n; i++) {
+    		cin >> a[i];
+    		if (a[i] > m) {
+    			m = a[i];
+    			s = 1;
+    		}
+    		else if (a[i] == m) {
+    			s ++;
+    		}
+    	}
+    	if (s == n) cout << -1 << endl;
+    	else {
+    		cout << n - s << ' ' << s << endl;
+    		for (int i = 0; i < n; i++)
+    			if (a[i] != m) {
+    				cout << a[i] << ' ';
+    			}
+			cout << endl;
+			for (int i = 0; i < s; i++)
+				cout << m << ' ';
+			cout << endl;
+    	}
     }
  	
 	return 0;

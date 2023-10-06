@@ -267,17 +267,47 @@ long long perm(long long n, long long m) {
 
 /* Code starts here */
 
-int32 main() {
+int l[1000];
+int find(int i) {
+	if (l[i] == i) return i;
+	l[i] = find(l[i]);
+	return l[i];
+}
+
+int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-    freopen(".in", "r", stdin);
-    freopen(".out", "w", stdout);
+    freopen("C.in", "r", stdin);
+    // freopen(".out", "w", stdout);
 #endif
 
     int tasks; cin >> tasks;
     while (tasks --) {
-
+    	int n; cin >> n;
+    	int ans = 0;
+    	for (int i = 1; i <= n; i++) {
+    		for (int ai = 1; ai <= n; ai++) {
+    			// cout << "! " << i << ' ' << ai << endl;
+    			int sum = 0;
+    			for (int j = 0; j <= n; j++) l[j] = j;
+				l[i] = i - 1;
+				for (int j = n; j >= 1; j--) if (j != ai) {
+					int p = find(min(i * ai / j, n));
+					// cout << j << ' ' << p << endl;
+					if (p > 0) {
+						sum = sum + j * p;
+						l[p] = p - 1;
+					}
+					else {
+						sum = 0;
+						break;
+					}
+				}
+				ans = max(ans, sum);
+    		}
+		}
+		cout << ans << endl;
     }
  	
 	return 0;

@@ -267,17 +267,37 @@ long long perm(long long n, long long m) {
 
 /* Code starts here */
 
-int32 main() {
+int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-    freopen(".in", "r", stdin);
-    freopen(".out", "w", stdout);
+    freopen("B.in", "r", stdin);
+    // freopen(".out", "w", stdout);
 #endif
 
     int tasks; cin >> tasks;
     while (tasks --) {
-
+    	int n; cin >> n;
+    	int allmin = MAXINT;
+    	ll sum = 0;
+    	int minmin2 = MAXINT;
+    	for (int i = 0; i < n; i++) {
+    		int m, min1 = MAXINT, min2 = MAXINT; cin >> m;
+    		while (m --) {
+    			int j; cin >> j;
+    			allmin = min(allmin, j);
+    			if (j < min1) {
+    				min2 = min1;
+    				min1 = j;
+    			}
+    			else if (j < min2) {
+    				min2 = j;
+    			}
+    		}
+    		sum = sum + min2;
+    		minmin2 = min(minmin2, min2);
+    	}
+    	cout << sum + allmin - minmin2 << endl;
     }
  	
 	return 0;
