@@ -271,13 +271,51 @@ int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-	freopen(".in", "r", stdin);
-	// freopen(".out", "w", stdout);
+	freopen("D.in", "r", stdin);
 #endif
 
 	int tasks; cin >> tasks;
 	while (tasks --) {
-
+		int n; cin >> n;
+		vector<tuple<int, int, int>> ops;
+		vector<int> b(n);
+		for (int i = 0; i < n; i++) {
+			// -1, 0, 1
+			int l, r, a; cin >> l >> r >> a >> b[i];
+			ops.pb(make_tuple(-r, -2, i));
+			ops.pb(make_tuple(-l, 2, i));
+			ops.pb(make_tuple(-b[i], 0, i));
+		}
+		int m; cin >> m;
+		for (int i = 0; i < m; i++) {
+			int j; cin >> j;
+			ops.pb(make_tuple(-j, 1, i));
+		}
+		sort(ops.begin(), ops.end());
+		vector<int> f(n), ans(m);
+		multiset<int> s;
+		for (auto op : ops) {
+			int t = get<1>(op), i = get<2>(op);
+			if (t == -2) {
+				s.insert(b[i]);
+			}
+			if (t == 0) {
+				f[i] = *s.rbegin();
+				auto it = s.find(b[i]);
+			    if (it != s.end())
+			        s.erase(it);
+				s.insert(f[i]);
+			}
+			if (t == 1) {
+				ans[i] = max(-get<0>(op), (s.size() > 0 ? *s.rbegin() : 0));
+			}
+			if (t == 2) {
+				auto it = s.find(f[i]);
+			    if (it != s.end())
+			        s.erase(it);
+			}
+		}
+		print1d(ans);
 	}
 		
 	return 0;

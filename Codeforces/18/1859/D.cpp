@@ -12,7 +12,7 @@
 using namespace std;
 
 /* Template starts here */
- 
+
 long long mo = 1000000007; // This variable may be changed later
 
 #define ll long long
@@ -267,48 +267,96 @@ long long perm(long long n, long long m) {
 
 /* Code starts here */
 
-int l[1000];
-int find(int i) {
-	if (l[i] == i) return i;
-	l[i] = find(l[i]);
-	return l[i];
+void up(vector<int> &b, vector<int> &h, vector<int> &p, int s = -1) {
+	if (s == -1) s = h.size() - 1;
+	for (int i = s; i > 1 && b[h[i]] > b[h[i / 2]]; i = i / 2) {
+		swap(h[i], h[i / 2]);
+		p[h[i]] = i;
+		p[h[i / 2]] = i / 2;
+	}
+
+}
+
+void down(vector<int> &b, vector<int> &h, vector<int> &p, int s = -1) {
+	if (s == -1) s = 1;
+	for (int i = s; i * 2 < h.size(); ) {
+		int j = i * 2;
+		if (j + 1 < h.size() && b[h[j + 1]] > b[h[j]]) j++;
+		if (b[h[j]] > b[h[i]]) {
+			swap(h[i], h[j]);
+			p[h[i]] = i;
+			p[h[j]] = j;
+			i = j;
+		}
+		else {
+			break;
+		}
+	}
 }
 
 int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-    freopen("C.in", "r", stdin);
-    // freopen(".out", "w", stdout);
+	freopen("D.in", "r", stdin);
 #endif
 
-    int tasks; cin >> tasks;
-    while (tasks --) {
-    	int n; cin >> n;
-    	int ans = 0;
-    	for (int i = 1; i <= n; i++) {
-    		for (int ai = 1; ai <= n; ai++) {
-    			// cout << "! " << i << ' ' << ai << endl;
-    			int sum = 0;
-    			for (int j = 0; j <= n; j++) l[j] = j;
-				l[i] = i - 1;
-				for (int j = n; j >= 1; j--) if (j != ai) {
-					int p = find(min(i * ai / j, n));
-					// cout << j << ' ' << p << endl;
-					if (p > 0) {
-						sum = sum + j * p;
-						l[p] = p - 1;
-					}
-					else {
-						sum = 0;
-						break;
-					}
-				}
-				ans = max(ans, sum);
-    		}
+	int tasks; cin >> tasks;
+	while (tasks --) {
+		int n; cin >> n;
+		vector<tuple<int, int, int>> ops;
+		vector<int> b(n);
+		for (int i = 0; i < n; i++) {
+			// -1, 0, 1
+			int l, r, a; cin >> l >> r >> a >> b[i];
+			ops.pb(make_tuple(-r, -2, i));
+			ops.pb(make_tuple(-l, 2, i));
+			ops.pb(make_tuple(-b[i], 0, i));
 		}
-		cout << ans << endl;
-    }
- 	
+		int m; cin >> m;
+		for (int i = 0; i < m; i++) {
+			int j; cin >> j;
+			ops.pb(make_tuple(-j, 1, i));
+		}
+		sort(ops.begin(), ops.end());
+		// for (int i = 0; i < ops.size(); i++) {
+		// 	cout << get<0>(ops[i]) << ' ' << get<1>(ops[i]) << ' ' << get<2>(ops[i]) << endl;
+		// }
+		vector<int> f(n);
+		vector<int> h(1);
+		vector<int> p(n), ans(m);
+		for (auto op : ops) {
+			// cout << get<0>(op) << ' ' << get<1>(op) << ' ' << get<2>(op) << endl;
+			int t = get<1>(op);
+			int i = get<2>(op);
+			if (t == -2) {
+				h.pb(i); p[i] = h.size() - 1;
+				up(b, h, p);
+			}
+			if (t == 0) {
+				int j = h[1];
+				if (b[j] > b[i]) {
+					f[i] = f[j];
+				}
+				else {
+					f[i] = b[i];
+				}
+			}
+			if (t == 1) {
+				ans[i] = max(-get<0>(op), (h.size() > 1 ? f[h[1]] : 0));
+			}
+			if (t == 2) {
+				int pi = p[i];
+				swap(h[pi], h[h.size() - 1]);
+				p[h[pi]] = pi;
+				h.pop_back();
+				down(b, h, p, pi);
+				up(b, h, p, pi);
+			}
+			// print1d(h);
+		}
+		print1d(ans);
+	}
+		
 	return 0;
 }
