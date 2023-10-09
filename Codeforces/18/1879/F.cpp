@@ -262,7 +262,7 @@ long long perm(long long n, long long m) {
 
 /* Code starts here */
 
-int cmp(pair<long long, long long> a, pair<long long, long long> b) {
+int cmp(pair<long long, long long> &a, pair<long long, long long> &b) {
 	return a.first > b.first;
 }
 
@@ -283,7 +283,7 @@ int main() {
 	 	
 #ifndef ONLINE_JUDGE
 	freopen("F.in", "r", stdin);
-	freopen("F.out", "w", stdout);
+	// freopen("F.out", "w", stdout);
 #endif
 	int tasks; cin >> tasks;
 	while (tasks --) {
@@ -295,10 +295,10 @@ int main() {
 		for (int i = 0; i < n; i++) m = max(m, a[i]);
 		int bits = 0;
 		while ((1 << (bits + 1)) <= m) bits ++;
-		cout << m << ' ' << bits << endl;
-		vector<vector<long long>> m1(m * 2 + 1, vector<long long>(bits, -1));
-		vector<vector<long long>> p1(m * 2 + 1, vector<long long>(bits, -1));
-		vector<vector<long long>> m2(m * 2 + 1, vector<long long>(bits, -1));
+		// cout << m << ' ' << bits << endl;
+		vector<vector<long long>> m1(m * 2 + 1, vector<long long>(bits + 1, -1));
+		vector<vector<long long>> p1(m * 2 + 1, vector<long long>(bits + 1, -1));
+		vector<vector<long long>> m2(m * 2 + 1, vector<long long>(bits + 1, -1));
 		for (int i = 0; i < n; i++) merge(m1[a[i]][0], p1[a[i]][0], m2[a[i]][0], h[i], i, -1, m1[a[i]][0], p1[a[i]][0], m2[a[i]][0]);
 		for (int j = 1; j <= bits; j++) {
 			for (int i = 0; i <= m; i++) {
@@ -308,6 +308,7 @@ int main() {
 					m1[k][j - 1], p1[k][j - 1], m2[k][j - 1], 
 					m1[i][j], p1[i][j], m2[i][j]
 					);
+				// cout << i << ' ' << j << ' ' << k << ' ' << m1[i][j] << ' ' << p1[i][j] << ' ' << m2[i][j] << endl;
 			}
 		}
 		vector<long long> ans(n, 0);

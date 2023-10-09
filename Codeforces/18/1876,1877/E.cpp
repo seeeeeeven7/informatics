@@ -291,21 +291,17 @@ int main() {
 			}
 		while (!q.empty()) {
 			int i = q.front(); q.pop();
-			if (ans[i] == 0) ans[a[i]] = 1;
-			if (--b[a[i]] == 0) {
-				q.push(a[i]);
-			}
-		}
-		for (int i = 1; i <= n; i++) {
-			if (b[i] > 0 && ans[i] > 0) {
-				b[i] --;
-				if (a[i] != i) {
-					for (int j = a[i], k = ans[i] ^ 1; j != i; j = a[j]) {
-						b[j] --;
-						ans[j] = k;
-						k = k ^ 1;
-					}
+			if (ans[i] == 0) {
+				ans[a[i]] = 1;
+				if (b[a[i]] > 0) {
+					b[a[i]] = 0;
+					q.push(a[i]);
 				}
+			}
+			else {
+				if (--b[a[i]] == 0) {
+					q.push(a[i]);
+				}	
 			}
 		}
 		for (int i = 1; i <= n; i++) {
