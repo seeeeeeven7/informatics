@@ -9,11 +9,22 @@
 #include <string.h>
 #include <set>
 #include <queue>
+#include <chrono>
+#include <random>
 using namespace std;
 
 /* Template starts here */
- 
+
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+
 long long mo = 1000000007; // This variable may be changed later
+
+#define ll long long
+#define pb push_back
+#define fi first
+#define se second
+#define pii pair<int,int>
+#define mp make_pair
 
 #define ios_sync_false ios_base::sync_with_stdio(false)
 
@@ -25,6 +36,12 @@ const int dx8[8] = {0, 0, 1, 1, 1, -1, -1, -1};
 const int dy8[8] = {1, -1, 1, 0, -1, 1, 0, -1};
 const int hdx4[4] = {0, 1, 1, 1};
 const int hdy4[4] = {1, 1, 0, -1};
+
+void print1d(vector<int> &a) {
+	for (int i : a) 
+		cout << i << ' ';
+	cout << endl;
+}
 
 template<class T> T stoi(string str) {
 	T ret = 0;
@@ -46,14 +63,6 @@ template<class T> string itos(T i) {
 	}
 	if (neg) ret = '-' + ret;
 	return ret;
-}
-
-bool updateType1(int &ans, int now) {
-	if (ans == -1 || ans > now) {
-		ans = now;
-		return true;
-	}
-	return false;
 }
 
 bool updateType1(long long &ans, long long now) {
@@ -262,80 +271,23 @@ long long perm(long long n, long long m) {
 
 /* Code starts here */
 
-void merge(long long am1, long long ap1, long long am2, long long bm1, long long bp1, long long bm2, long long &cm1, long long &cp1, long long &cm2) {
-	if (am1 == bm1) {
-		if (ap1 != bp1) {
-			cm1 = cm2 = am1;
-			cp1 = ap1;
-		}
-		else {
-			cm1 = am1;
-			cp1 = ap1;
-			cm2 = max(am2, bm2);
-		}
-	}
-	else if (am1 > bm1) {
-		cm1 = am1;
-		cp1 = ap1;
-		cm2 = max(am2, bm1);
-	}
-	else {
-		cm1 = bm1;
-		cp1 = bp1;
-		cm2 = max(am1, bm2);
-	}
-}
-
-void 
-
 int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-	freopen("F1.in", "r", stdin);
-	freopen("F1.out", "w", stdout);
+	// freopen(".in", "r", stdin);
+	freopen("F1.in", "w", stdout);
 #endif
-	int tasks; cin >> tasks;
-	while (tasks --) {
-		int n; cin >> n;
-		vector<int> a(n), h(n);
-		for (int i = 0; i < n; i++) cin >> h[i];
-		for (int i = 0; i < n; i++) cin >> a[i];
-		int m = 0;
-		for (int i = 0; i < n; i++) m = max(m, a[i]);
-		int bits = 0;
-		while ((1 << (bits + 1)) <= m) bits ++;
-		// cout << m << ' ' << bits << endl;
-		vector<vector<long long>> m1(m * 2 + 1, vector<long long>(bits + 1, -1));
-		vector<vector<long long>> p1(m * 2 + 1, vector<long long>(bits + 1, -1));
-		vector<vector<long long>> m2(m * 2 + 1, vector<long long>(bits + 1, -1));
-		for (int i = 0; i < n; i++) merge(m1[a[i]][0], p1[a[i]][0], m2[a[i]][0], h[i], i, -1, m1[a[i]][0], p1[a[i]][0], m2[a[i]][0]);
-		for (int j = 1; j <= bits; j++) {
-			for (int i = 0; i <= m; i++) {
-				int k = i + (1 << (j - 1));
-				merge(
-					m1[i][j - 1], p1[i][j - 1], m2[i][j - 1], 
-					m1[k][j - 1], p1[k][j - 1], m2[k][j - 1], 
-					m1[i][j], p1[i][j], m2[i][j]
-					);
-				// cout << i << ' ' << j << ' ' << k << ' ' << m1[i][j] << ' ' << p1[i][j] << ' ' << m2[i][j] << endl;
-			}
-		}
-		vector<long long> ans(n, 0);
-		for (long long x = 1, j = 0; x <= m; x ++) {
-			while ((1 << (j + 1)) <= x) j++;
-			long long dm1 = -1, dp1 = -1, dm2 = -1;
-			for (int hits = 1; hits <= (m - 1) / x + 1; hits ++) {
-				long long l = (hits - 1) * x + 1, r = hits * x - (1 << j) + 1;
-				long long cm1 = -1, cp1 = -1, cm2 = -1;
-				merge(m1[l][j], p1[l][j], m2[l][j], m1[r][j], p1[r][j], m2[r][j], cm1, cp1, cm2);
-				// cout << l << ' ' << r << ' ' << cm1 << ' ' << cp1 << ' ' << cm2 << endl;
-				merge(dm1, dp1, dm2, cm1 * hits, cp1, cm2 * hits, dm1, dp1, dm2);
-			}
-			// cout << x << ' ' << dm1 << ' ' << dp1 << ' ' << dm2 << endl;
-			ans[dp1] = max(ans[dp1], dm1 - max(dm2, 0LL));
-		}
-		for (long long i : ans) cout << i << ' ';
+	int tasks = 10;
+	cout << tasks << endl;
+	while (tasks--) {
+		int n = rng() % 200000 + 1;
+		cout << n << endl;
+		for (int i = 0; i < n; i++)
+			cout << rng() % 200000 + 1 << ' ';
+		cout << endl;
+		for (int i = 0; i < n; i++)
+			cout << rng() % 200000 + 1 << ' ';
 		cout << endl;
 	}
 	return 0;
