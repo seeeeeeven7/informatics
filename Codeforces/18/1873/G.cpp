@@ -255,13 +255,41 @@ int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-	freopen(".in", "r", stdin);
+	freopen("G.in", "r", stdin);
 	// freopen(".out", "w", stdout);
 #endif
 
 	int tasks; cin >> tasks;
 	while (tasks --) {
-
+		string s; cin >> s;
+		int n = s.length(), cnt = 0;
+		for (int i = 0; i < n; i++) 
+			if (s[i] == 'A')
+				cnt++;
+		// cout << n << ' ' << cnt << endl;
+		if (s[0] == 'B' || s[n - 1] == 'B')
+			cout << cnt << endl;
+		else {
+			bool b2 = false;
+			for (int i = 0; i + 1 < n; i++) 
+				if (s[i] == 'B' && s[i + 1] == 'B')
+					b2 = true;
+			if (b2) cout << cnt << endl;
+			else {
+				int mi = -1;
+				for (int i = 0, j = -1; i < n; i++) {
+					if (s[i] == 'A' && (i == n - 1 || s[i + 1] == 'B')) {
+						if (mi == -1) mi = i - j;
+						else
+						mi = min(mi, i - j);
+					}
+					if (s[i] == 'B') {
+						j = i;
+					}
+				}
+				cout << cnt - mi << endl;
+			}
+		}
 	}
 		
 	return 0;

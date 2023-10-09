@@ -255,13 +255,36 @@ int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-	freopen(".in", "r", stdin);
+	freopen("E.in", "r", stdin);
 	// freopen(".out", "w", stdout);
 #endif
 
 	int tasks; cin >> tasks;
 	while (tasks --) {
-
+		ll n, x; cin >> n >> x;
+		vector<ll> a(n);
+		for (ll i = 0; i < n; i++) cin >> a[i];
+		sort(a.begin(), a.end());
+		ll ans = 1;
+		for (ll i = 0, j = -1; i < n; i++)
+			if (i == n - 1 || a[i] != a[i + 1]) {
+				if (j == -1) {
+					j = i;
+					ans = a[i];
+				}
+				else if ((j + 1) * (a[i] - a[j]) <= x) {
+					x -= (j + 1) * (a[i] - a[j]);
+					j = i;
+					ans = a[i];
+				}
+				else {
+					ans += x / (j + 1);
+					x = x % (j + 1);
+					break;
+				}
+			}
+		ans += x / n;
+		cout << ans << endl;
 	}
 		
 	return 0;

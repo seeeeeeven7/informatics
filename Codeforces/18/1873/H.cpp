@@ -255,13 +255,19 @@ int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-	freopen(".in", "r", stdin);
+	freopen("G.in", "r", stdin);
 	// freopen(".out", "w", stdout);
 #endif
 
 	int tasks; cin >> tasks;
 	while (tasks --) {
+		int n, a, b; cin >> n >> a >> b;
+		vector<vector<int>> e;
+		vector<int> c(n + 1, 0);
+		for (int i = 1; i <= n; i++) {
+			int u, v; cin >> u >> v;
 
+		}
 	}
 		
 	return 0;

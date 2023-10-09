@@ -255,13 +255,22 @@ int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-	freopen(".in", "r", stdin);
+	freopen("D.in", "r", stdin);
 	// freopen(".out", "w", stdout);
 #endif
 
 	int tasks; cin >> tasks;
 	while (tasks --) {
-
+		int n, k; cin >> n >> k;
+		string a; cin >> a;
+		int ans = 0;
+		for (int i = 0; i < n; i++) {
+			if (a[i] == 'B') {
+				ans = ans + 1;
+				i = i + k - 1;
+			}
+		}
+		cout << ans << endl;
 	}
 		
 	return 0;

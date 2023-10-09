@@ -255,13 +255,21 @@ int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-	freopen(".in", "r", stdin);
+	freopen("C.in", "r", stdin);
 	// freopen(".out", "w", stdout);
 #endif
 
 	int tasks; cin >> tasks;
 	while (tasks --) {
-
+		int n = 10;
+		vector<string> a(n);
+		for (int i = 0; i < n; i++) cin >> a[i];
+		int ans = 0;
+		for (int i = 0; i < n; i++) 
+			for (int j = 0; j < n; j++)
+				if (a[i][j] == 'X')
+					ans = ans + min(min(i + 1, n - i), min(j + 1, n - j));
+		cout << ans << endl;
 	}
 		
 	return 0;
