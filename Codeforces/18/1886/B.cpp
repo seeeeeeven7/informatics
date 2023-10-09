@@ -251,76 +251,39 @@ long long perm(long long n, long long m) {
 
 /* Code starts here */
 
+#define dis(ax, ay, bx, by) ((ax - bx) * (ax - bx) + (ay - by) * (ay - by))
+
 int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-	freopen("H.in", "r", stdin);
+	freopen("B.in", "r", stdin);
 	// freopen(".out", "w", stdout);
 #endif
 
 	int tasks; cin >> tasks;
 	while (tasks --) {
-		int n, a, b; cin >> n >> a >> b;
-		vector<vector<int>> e(n + 1);
-		vector<int> c(n + 1, 0);
-		for (int i = 1; i <= n; i++) {
-			int u, v; cin >> u >> v;
-			e[u].pb(v); e[v].pb(u); 
-			c[u] ++; c[v] ++;
-		}
-		vector<bool> bo(n + 1, false);
-		vector<int> da(n + 1, -1), db(n + 1, -1);
-		da[a] = 0; db[b] = 0;
-		queue<int> q;
-		for (int i = 1; i <= n; i++)
-			if (c[i] == 1) {
-				bo[i] = true;
-				q.push(i);
+		double px, py; cin >> px >> py;
+		double ax, ay; cin >> ax >> ay;
+		double bx, by; cin >> bx >> by;
+		double l = 0, r = 1e5;
+		while (l + 1e-9 < r) {
+			// cout << l << ' ' << r << endl;
+			double m = (l + r) / 2;
+			bool valid = false;
+			if (dis(0, 0, ax, ay) < m * m && dis(px, py, ax, ay) < m * m) valid = true;
+			if (dis(0, 0, bx, by) < m * m && dis(px, py, bx, by) < m * m) valid = true;
+			if (dis(ax, ay, bx, by) < 4 * m * m) {
+				if (dis(0, 0, ax, ay) < m * m && dis(px, py, bx, by) < m * m) valid = true;
+				if (dis(0, 0, bx, by) < m * m && dis(px, py, ax, ay) < m * m) valid = true;
 			}
-		while (!q.empty()) {
-			int i = q.front(); q.pop();
-			for (int j : e[i])
-				if (!bo[j]) {
-					if (da[i] != -1) da[j] = da[i] + 1;
-					if (db[i] != -1) db[j] = db[i] + 1;
-					if (--c[j] == 1) {
-						bo[j] = true;
-						q.push(j);
-					}
-				}
+			if (valid) r = m;
+			else l = m;
 		}
-		for (int i = 1; i <= n; i++) if (c[i] > 1) {
-			int ia = 0, ib = 0;
-			int ja = 0, jb = 0;
-			vector<int> ci;
-			q.push(i); bo[i] = true;
-			while (!q.empty()) {
-				i = q.front(); q.pop();
-				if (da[i] != -1) {
-					ia = ci.size();
-					ja = da[i];
-				}
-				if (db[i] != -1) {
-					ib = ci.size();
-					jb = db[i];
-				}
-				ci.pb(i);
-				for (int j : e[i])
-					if (!bo[j]) {
-						q.push(j); bo[j] = true;
-						break;
-					}
-			}
-			// cout << ia << ' ' << ja << endl;
-			// cout << ib << ' ' << jb << endl;
-			if (ja + min(abs(ia - ib), n - 1 - abs(ia - ib)) <= jb) 
-				cout << "NO" << endl;
-			else
-				cout << "YES" << endl;
-			break;
-		}
+		cout<<fixed; cout.precision(10);
+		cout << l << endl;
 	}
 		
 	return 0;
 }
+ 

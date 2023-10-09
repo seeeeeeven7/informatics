@@ -255,70 +255,88 @@ int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-	freopen("H.in", "r", stdin);
+	freopen("E.in", "r", stdin);
 	// freopen(".out", "w", stdout);
 #endif
 
-	int tasks; cin >> tasks;
-	while (tasks --) {
-		int n, a, b; cin >> n >> a >> b;
-		vector<vector<int>> e(n + 1);
-		vector<int> c(n + 1, 0);
-		for (int i = 1; i <= n; i++) {
-			int u, v; cin >> u >> v;
-			e[u].pb(v); e[v].pb(u); 
-			c[u] ++; c[v] ++;
+	ll n, m;
+	while (cin >> n >> m) {
+		vector<pii> a;
+		for (ll i = 0; i < n; i++) {
+			ll j; cin >> j;
+			a.pb(mp(j, i + 1));
 		}
-		vector<bool> bo(n + 1, false);
-		vector<int> da(n + 1, -1), db(n + 1, -1);
-		da[a] = 0; db[b] = 0;
-		queue<int> q;
-		for (int i = 1; i <= n; i++)
-			if (c[i] == 1) {
-				bo[i] = true;
-				q.push(i);
+		sort(a.begin(), a.end());
+		vector<ll> b(m);
+		for (ll i = 0; i < m; i++) cin >> b[i];
+
+		ll u = 0, v = n - 1;
+		while (u < v) {
+			// cout << u << ' ' << v << endl;
+			ll mid = (u + v + 1) / 2;
+			vector<ll> f(1 << m, -1);
+			vector<ll> g(1 << m, -1);
+			f[0] = mid;
+			for (ll i = 0; i < (1 << m); i++) if (f[i] != -1 && f[i] < n) {
+				// cout << "F: " << i << ' ' << f[i] << endl;
+				for (ll j = 0; j < m; j++)
+					if (((i >> j) & 1) == 0) {
+						ll k = (b[j] - 1) / a[f[i]].fi + 1;
+						// cout << j << ' ' << k << endl;
+						if (f[i] + k <= n) {
+							if (f[i + (1 << j)] == -1 || f[i + (1 << j)] > f[i] + k) {
+								// cout << i << " -> " << (i + (1 << j)) << ' ' << f[i] + k << endl;
+								f[i + (1 << j)] = f[i] + k;
+								g[i + (1 << j)] = j;
+							}
+						}
+					}
 			}
-		while (!q.empty()) {
-			int i = q.front(); q.pop();
-			for (int j : e[i])
-				if (!bo[j]) {
-					if (da[i] != -1) da[j] = da[i] + 1;
-					if (db[i] != -1) db[j] = db[i] + 1;
-					if (--c[j] == 1) {
-						bo[j] = true;
-						q.push(j);
+			if (f[(1 << m) - 1] == -1) v = mid - 1;
+			else u = mid;
+		}
+
+		vector<ll> f(1 << m, -1);
+		vector<ll> g(1 << m, -1);
+		f[0] = u;
+		for (ll i = 0; i < (1 << m); i++) if (f[i] != -1) {
+			// cout << "F: " << i << ' ' << f[i] << endl;
+			for (ll j = 0; j < m; j++)
+				if (((i >> j) & 1) == 0) {
+					ll k = (b[j] - 1) / a[f[i]].fi + 1;
+					// cout << j << ' ' << k << endl;
+					if (f[i] + k <= n) {
+						if (f[i + (1 << j)] == -1 || f[i + (1 << j)] > f[i] + k) {
+							// cout << i << " -> " << (i + (1 << j)) << ' ' << f[i] + k << endl;
+							f[i + (1 << j)] = f[i] + k;
+							g[i + (1 << j)] = j;
+						}
 					}
 				}
 		}
-		for (int i = 1; i <= n; i++) if (c[i] > 1) {
-			int ia = 0, ib = 0;
-			int ja = 0, jb = 0;
-			vector<int> ci;
-			q.push(i); bo[i] = true;
-			while (!q.empty()) {
-				i = q.front(); q.pop();
-				if (da[i] != -1) {
-					ia = ci.size();
-					ja = da[i];
-				}
-				if (db[i] != -1) {
-					ib = ci.size();
-					jb = db[i];
-				}
-				ci.pb(i);
-				for (int j : e[i])
-					if (!bo[j]) {
-						q.push(j); bo[j] = true;
-						break;
-					}
+
+
+		if (f[(1 << m) - 1] == -1) cout << "NO" << endl;
+		else {
+			cout << "YES" << endl;
+			vector<ll> plan;
+			for (ll i = (1 << m) - 1; i > 0; i -= (1 << g[i])) plan.pb(g[i]);
+
+			vector<vector<ll>> ans(m);
+
+			for (ll pi = m - 1, j = 0; pi >= 0; pi--) {
+				ll i = plan[pi];
+				ll k = (b[i] - 1) / a[j].fi + 1;
+				// if (pi == 0) k = n - j;
+				for (ll p = j; p < j + k; p++) ans[i].pb(a[p].se);
+				j += k;
 			}
-			// cout << ia << ' ' << ja << endl;
-			// cout << ib << ' ' << jb << endl;
-			if (ja + min(abs(ia - ib), n - 1 - abs(ia - ib)) <= jb) 
-				cout << "NO" << endl;
-			else
-				cout << "YES" << endl;
-			break;
+
+			for (ll i = 0; i < m; i++) {
+				cout << ans[i].size();
+				for (ll j : ans[i]) cout << ' ' << j;
+				cout << endl;
+			}
 		}
 	}
 		
