@@ -251,6 +251,10 @@ long long perm(long long n, long long m) {
 
 /* Code starts here */
 
+int cmp(pii &a, pii &b) {
+	return a.fi > b.fi;
+}
+
 int main() {
 	ios_sync_false;
 	 	
@@ -266,45 +270,31 @@ int main() {
 			ll j; cin >> j;
 			a.pb(mp(j, i + 1));
 		}
-		sort(a.begin(), a.end());
+		sort(a.begin(), a.end(), cmp);
 		vector<ll> b(m);
 		for (ll i = 0; i < m; i++) cin >> b[i];
 
-		ll u = 0, v = n - 1;
-		while (u < v) {
-			// cout << u << ' ' << v << endl;
-			ll mid = (u + v + 1) / 2;
-			vector<ll> f(1 << m, -1);
-			vector<ll> g(1 << m, -1);
-			f[0] = mid;
-			for (ll i = 0; i < (1 << m); i++) if (f[i] != -1 && f[i] < n) {
-				// cout << "F: " << i << ' ' << f[i] << endl;
-				for (ll j = 0; j < m; j++)
-					if (((i >> j) & 1) == 0) {
-						ll k = (b[j] - 1) / a[f[i]].fi + 1;
-						// cout << j << ' ' << k << endl;
-						if (f[i] + k <= n) {
-							if (f[i + (1 << j)] == -1 || f[i + (1 << j)] > f[i] + k) {
-								// cout << i << " -> " << (i + (1 << j)) << ' ' << f[i] + k << endl;
-								f[i + (1 << j)] = f[i] + k;
-								g[i + (1 << j)] = j;
-							}
-						}
-					}
+		vector<vector<int>> c(n, vector<int>(m, n + 1));
+		for (int i = 0; i < n; i++) 
+			for (int j = 0; j < m; j++) {
+				int k = (b[j] - 1) / a[i].fi + 1;
+				if (i + 1 >= k) {
+					c[i - k + 1][j] = min(c[i - k + 1][j], k);
+				}
 			}
-			if (f[(1 << m) - 1] == -1) v = mid - 1;
-			else u = mid;
-		}
+		for (int i = n - 1; i > 0; i--)
+			for (int j = 0; j < m; j++)
+				c[i - 1][j] = min(c[i - 1][j], c[i][j] + 1);
 
 		vector<ll> f(1 << m, -1);
 		vector<ll> g(1 << m, -1);
-		f[0] = u;
-		for (ll i = 0; i < (1 << m); i++) if (f[i] != -1) {
+		f[0] = 0;
+		for (ll i = 0; i < (1 << m); i++) if (f[i] != -1 && f[i] < n) {
 			// cout << "F: " << i << ' ' << f[i] << endl;
 			for (ll j = 0; j < m; j++)
 				if (((i >> j) & 1) == 0) {
-					ll k = (b[j] - 1) / a[f[i]].fi + 1;
-					// cout << j << ' ' << k << endl;
+					ll k = c[f[i]][j];
+					// cout << f[i] << ' ' << j << ' ' << k << endl;
 					if (f[i] + k <= n) {
 						if (f[i + (1 << j)] == -1 || f[i + (1 << j)] > f[i] + k) {
 							// cout << i << " -> " << (i + (1 << j)) << ' ' << f[i] + k << endl;
@@ -315,18 +305,24 @@ int main() {
 				}
 		}
 
-
 		if (f[(1 << m) - 1] == -1) cout << "NO" << endl;
 		else {
 			cout << "YES" << endl;
 			vector<ll> plan;
-			for (ll i = (1 << m) - 1; i > 0; i -= (1 << g[i])) plan.pb(g[i]);
+			vector<ll> amount;
+			for (ll i = (1 << m) - 1; i > 0; i -= (1 << g[i])) {
+				plan.pb(g[i]);
+				// cout << i << ' ' << g[i] << ' ' << i - (1 << g[i]) << endl;
+				amount.pb(f[i] - f[i - (1 << g[i])]);
+			}
+			// for (int i = 0; i < m; i++) cout << plan[i] << ' '; cout << endl;
+			// for (int i = 0; i < m; i++) cout << amount[i] << ' '; cout << endl;
 
 			vector<vector<ll>> ans(m);
 
 			for (ll pi = m - 1, j = 0; pi >= 0; pi--) {
 				ll i = plan[pi];
-				ll k = (b[i] - 1) / a[j].fi + 1;
+				ll k = amount[pi];
 				// if (pi == 0) k = n - j;
 				for (ll p = j; p < j + k; p++) ans[i].pb(a[p].se);
 				j += k;
