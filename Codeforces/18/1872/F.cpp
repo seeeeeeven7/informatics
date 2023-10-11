@@ -12,8 +12,15 @@
 using namespace std;
 
 /* Template starts here */
- 
+
 long long mo = 1000000007; // This variable may be changed later
+
+#define ll long long
+#define pb push_back
+#define fi first
+#define se second
+#define pii pair<int,int>
+#define mp make_pair
 
 #define ios_sync_false ios_base::sync_with_stdio(false)
 
@@ -25,6 +32,12 @@ const int dx8[8] = {0, 0, 1, 1, 1, -1, -1, -1};
 const int dy8[8] = {1, -1, 1, 0, -1, 1, 0, -1};
 const int hdx4[4] = {0, 1, 1, 1};
 const int hdy4[4] = {1, 1, 0, -1};
+
+void print1d(vector<int> &a) {
+	for (int i : a) 
+		cout << i << ' ';
+	cout << endl;
+}
 
 template<class T> T stoi(string str) {
 	T ret = 0;
@@ -46,30 +59,6 @@ template<class T> string itos(T i) {
 	}
 	if (neg) ret = '-' + ret;
 	return ret;
-}
-
-bool updateType1(int &ans, int now) {
-	if (ans == -1 || ans > now) {
-		ans = now;
-		return true;
-	}
-	return false;
-}
-
-bool updateType1(long long &ans, long long now) {
-	if (ans == -1 || ans > now) {
-		ans = now;
-		return true;
-	}
-	return false;
-}
-
-bool updateType1(double &ans, double now) {
-	if (ans == -1 || ans > now) {
-		ans = now;
-		return true;
-	}
-	return false;
 }
 
 class Edge {
@@ -252,7 +241,6 @@ long long vers(long long p) {
 }
 
 long long comb(long long n, long long m) {
-//	cout << n << ' ' << m << endl;
 	return ((fac(n) * vers(fac(n - m))) % mo * vers(fac(m))) % mo;
 }
 
@@ -260,131 +248,63 @@ long long perm(long long n, long long m) {
 	return fac(n) * vers(fac(m)) % mo;
 }
 
+
 /* Code starts here */
-
-vector<vector<string> > a(16, vector<string>());
-
-void calc(string s, int n, int r, int l, int p) {
-//	cout << s << ' ' << n << ' ' << r << ' ' << l << ' ' << p << endl;
-	if (r == 0) {
-		a[n].push_back(s + "]");
-	}
-	else {
-		for (long long i = l; i <= r; i++)
-			for (long long j = (i == l ? p : 0); j < a[i].size(); j ++) {
-				calc(s + a[i][j], n, r - i, i, j);	
-			}
-	}
-}
-
-map<string, int> idx;
-vector<vector<int> > edges;
-vector<string> hashs;
-vector<bool> found;
-
-string dfs(int i, int f) {
-	vector<string> subtrees;
-	bool exceed = false;
-	for (int j = 0; j < edges[i].size(); j++) if (edges[i][j] != f) {
-		string subtree = dfs(edges[i][j], i);
-		if (subtree == "exceed" || subtree.length() >= 30) exceed = true;
-		subtrees.push_back(subtree);
-	}
-	if (exceed) {
-		return "exceed";
-	}
-	else {
-		string s = "[";
-		vector<int> idxs;
-		for (int j = 0; j < subtrees.size(); j++) idxs.push_back(idx[subtrees[j]]);
-		sort(idxs.begin(), idxs.end());
-		for (int j = 0; j < idxs.size(); j++) {
-			s += hashs[idxs[j]];
-		}
-		s += "]";
-//		cout << i << ' ' << s <<endl;
-		if (s.length() <= 30) found[idx[s]] = true;
-		return s;
-	}
-}
-
-void resolve(string s, int i) {
-	int k = 0;
-	for (int j = 1, p = i + 1, l = 0; j < s.length() - 1; j++) {
-		if (s[j] == '[') k ++;
-		else k--;
-		if (k == 0) {
-			cout << i << ' ' << p << endl;
-			resolve(s.substr(l + 1, j - l), p);
-			p = p + (j - l) / 2;
-			l = j; 
-		}
-	}
-}
-
-void res(int i, int f) {
-	for (int j = 0; j < edges[i].size(); j++) if (edges[i][j] != f) {
-		cout << i << ' ' << edges[i][j] << endl;
-		res(edges[i][j], i);
-	}
-}
 
 int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-    freopen("F.in", "r", stdin);
-//    freopen("E.out", "w", stdout);
+	freopen("F.in", "r", stdin);
+	// freopen(".out", "w", stdout);
 #endif
 
-	a[1].push_back("[]");
-	for (int i = 2; i <= 15; i++) {
-		calc("[", i, i - 1, 1, 0);
-//		cout << i << ' ' << a[i].size() << endl;
+	int tasks; cin >> tasks;
+	while (tasks --) {
+		int n; cin >> n;
+		vector<int> a(n), c(n);
+		vector<vector<int>> e(n);
+		for (int i = 0; i < n; i++)  {
+			int j; cin >> j; j--;
+			e[i].pb(j); c[j] ++;
+		}
+		for (int i = 0; i < n; i++) cin >> a[i];
+		queue<int> q;
+		for (int i = 0; i < n; i++) if (c[i] == 0) {
+			q.push(i);
+		}
+		vector<int> ans;
+		while (!q.empty()) {
+			int i = q.front(); q.pop();
+			ans.pb(i);
+			for (int j : e[i]) {
+				if (--c[j] == 0) {
+					q.push(j);
+				}
+			}
+		}
+		// print1d(ans);
+		for (int i = 0; i < n; i++) if (c[i] != 0) {
+			int mi = -1;
+			vector<int> b;
+			q.push(i); c[i] = 0;
+			while (!q.empty()) {
+				int k = q.front(); q.pop();
+				if (mi == -1 || a[k] < a[b[mi]]) {
+					mi = b.size();
+				}
+				b.pb(k);
+				for (int j : e[k]) {
+					if (--c[j] == 0) {
+						q.push(j);
+					}
+				}
+			}
+			// print1d(b);
+			for (int j = 1; j <= b.size(); j++) ans.pb(b[(mi + j) % b.size()]);
+		}
+		for (int i : ans) cout << i + 1 << ' '; cout << endl;
 	}
-	
-	int cnt = 0;
-	for (int i = 1; i <= 15; i++) {
-		for (int j = 0; j < a[i].size(); j++) {
-			idx[a[i][j]] = cnt++;
-			hashs.push_back(a[i][j]);
-		}
-	}
-
-	int n; 
-	while (cin >> n) {	
-		edges = vector<vector<int> >(n + 1, vector<int>());
-		found = vector<bool>(idx.size(), false);
-//		vector<int> deg = vector<int>(n + 1, 0);
-		for (int i = 1; i < n; i++) {
-			int p, q; cin >> p >> q;
-//			cout << p << ' ' << q << endl;
-			edges[p].push_back(q);
-			edges[q].push_back(p);
-		}
-		dfs(1, -1);
-		int cnt = 0;
-		string base = "";
-		for (int i = 0; i < hashs.size(); i++) if (!found[i]) {
-			base = hashs[i];
-			break;
-		}
-		if (n == 100000) {
-//			for (int i = 1; i <= n; i++) if (deg[i] == 0) cout << i << endl;
-//			int j = 0;
-//			for (int i = 1; i <= n; i++) if (deg[i] == 1) j++;
-//			cout << j << endl;
-//			cout << base << endl;
-		}
-//		cout << base << endl;
-		if (base.length() / 2 > n) {
-			res(1, 0);
-		}
-		else {
-       		resolve(base, n - base.length() / 2 + 1);
-			for (int i = 1; i <= n - base.length() / 2; i++) cout << i << ' ' << i + 1 << endl;
-		}
-	}
- 	
+		
 	return 0;
 }
