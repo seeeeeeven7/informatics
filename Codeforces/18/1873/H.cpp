@@ -312,9 +312,11 @@ int main() {
 						break;
 					}
 			}
+			// for (int j = 1; j <= n; j++) if (!bo[j]) 
+			// 	cout << "!!!!" << j << endl;
 			// cout << ia << ' ' << ja << endl;
 			// cout << ib << ' ' << jb << endl;
-			if (ja + min(abs(ia - ib), n - 1 - abs(ia - ib)) <= jb) 
+			if (ja + min(abs(ia - ib), (int)ci.size() - abs(ia - ib)) <= jb) 
 				cout << "NO" << endl;
 			else
 				cout << "YES" << endl;
