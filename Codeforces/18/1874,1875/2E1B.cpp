@@ -12,8 +12,15 @@
 using namespace std;
 
 /* Template starts here */
- 
+
 long long mo = 1000000007; // This variable may be changed later
+
+#define ll long long
+#define pb push_back
+#define fi first
+#define se second
+#define pii pair<int,int>
+#define mp make_pair
 
 #define ios_sync_false ios_base::sync_with_stdio(false)
 
@@ -25,6 +32,12 @@ const int dx8[8] = {0, 0, 1, 1, 1, -1, -1, -1};
 const int dy8[8] = {1, -1, 1, 0, -1, 1, 0, -1};
 const int hdx4[4] = {0, 1, 1, 1};
 const int hdy4[4] = {1, 1, 0, -1};
+
+void print1d(vector<int> &a) {
+	for (int i : a) 
+		cout << i << ' ';
+	cout << endl;
+}
 
 template<class T> T stoi(string str) {
 	T ret = 0;
@@ -46,30 +59,6 @@ template<class T> string itos(T i) {
 	}
 	if (neg) ret = '-' + ret;
 	return ret;
-}
-
-bool updateType1(int &ans, int now) {
-	if (ans == -1 || ans > now) {
-		ans = now;
-		return true;
-	}
-	return false;
-}
-
-bool updateType1(long long &ans, long long now) {
-	if (ans == -1 || ans > now) {
-		ans = now;
-		return true;
-	}
-	return false;
-}
-
-bool updateType1(double &ans, double now) {
-	if (ans == -1 || ans > now) {
-		ans = now;
-		return true;
-	}
-	return false;
 }
 
 class Edge {
@@ -262,59 +251,87 @@ long long perm(long long n, long long m) {
 
 /* Code starts here */
 
-const int maxp = 20;
-
-int cmp(long double a, long double b) { return a > b; }
-
-long double dp(vector<long double> &s) {
-	int m = s.size();
-	sort(s.begin(), s.end(), cmp);
-	// for (auto j : s) cout << j << ' ';
-	// cout << endl;
-	vector<vector<long double>> f(m + 2, vector<long double>(m + 2, 0));
-	for (int i = m; i >= 1; i--)
-		for (int j = 0; j < m - i + 1; j++) {
-			f[i][j] = 0;
-			if (j > 0) f[i][j] += f[i + 1][j - 1] * j / (m - i + 1);
-			f[i][j] += (s[i - 1] + f[i + 1][j + 1] * (m - i - j)) / (m - i + 1);
-			// cout << i << ' ' << j << ' ' << f[i][j] << endl;
-		}
-	return f[1][0];
-}
-
 int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-    freopen("E.in", "r", stdin);
-    freopen("E.out", "w", stdout);
+	freopen("2E1B.in", "r", stdin);
+	// freopen(".out", "w", stdout);
 #endif
- 	
-    int tasks; cin >> tasks;
-    while (tasks --) {
-    	int n, m; cin >> n >> m;
-    	vector<vector<int>> a(n);
-    	vector<long double> f(n, 0.0);
-    	for (int i = 0, p, q; i < m; i++) {
-    		cin >> p >> q;
-    		a[p - 1].push_back(q - 1);
-    	}
-    	f[n - 1] = 1.0;
 
-    	for (int i = n - 2; i >= 0; i--) {
-    		if (a[i].size() == 0) {
-    			f[i] = 0;
-    		}
-    		else {
-    			vector<long double> s;
-    			for (int j : a[i]) 
-    				s.push_back(f[j]);
-    			f[i] = dp(s);
-    		}
-			// cout << "! " << i << ' ' <<f[i] << endl;
-    	}
-    	cout << fixed << std::setprecision(10) << f[0] << endl;
-    }
+	int f[256][256], g[256][256];
+	memset(f, 0, sizeof(f));
+	memset(g, 255, sizeof(g));
 
+	int tasks; cin >> tasks;
+	while (tasks --) {
+		int a, b, c, d, m; cin >> a >> b >> c >> d >> m;
+		int n = 30;
+		int t[2][2][2];
+		memset(t, 255, sizeof(t));
+		bool valid = true;
+		for (int i = 0; i < n; i++) {
+			int ai = (a >> i) & 1;
+			int bi = (b >> i) & 1;
+			int ci = (c >> i) & 1;
+			int di = (d >> i) & 1;
+			int mi = (m >> i) & 1;
+			if (t[ai][bi][mi] != -1 && t[ai][bi][mi] != (2 * ci + di)) {
+				valid = false;
+				break;
+			}
+			t[ai][bi][mi] = 2 * ci + di;
+		}
+		// cout << valid << endl;
+		if (!valid) cout << -1 << endl;
+		else {
+			a = b = c = d = m = 0;
+			for (int i = 0; i < 2; i++)
+				for (int j = 0; j < 2; j++)
+					for (int k = 0; k < 2; k++)
+						if (t[i][j][k] != -1) {
+							// cout << i << ' ' << j << ' ' << k << endl;
+							a = (a << 1) + i;
+							b = (b << 1) + j;
+							c = (c << 1) + (t[i][j][k] >> 1);
+							d = (d << 1) + (t[i][j][k] & 1);
+							m = (m << 1) + k;
+						}
+			// cout << a << ' ' << b << ' ' << c << ' ' << d << ' ' << m << endl;
+			queue<pii> q; q.push(mp(a, b)); 
+			f[a][b] = 0; g[a][b] = tasks;
+			while (!q.empty()) {
+				pii s = q.front(); q.pop();
+				int x = s.fi, y = s.se;
+				// cout << x << ' ' << y << endl;
+				if (x == c && y == d) break;
+				if (g[x & y][y] != tasks) {
+					f[x & y][y] = f[x][y] + 1;
+					g[x & y][y] = tasks;
+					q.push(mp(x & y, y));
+				}
+				if (g[x | y][y] != tasks) {
+					f[x | y][y] = f[x][y] + 1;
+					g[x | y][y] = tasks;
+					q.push(mp(x | y, y));
+				}
+				if (g[x][y ^ x] != tasks) {
+					f[x][y ^ x] = f[x][y] + 1;
+					g[x][y ^ x] = tasks;
+					q.push(mp(x, y ^ x));
+				}
+				if (g[x][y ^ m] != tasks) {
+					f[x][y ^ m] = f[x][y] + 1;
+					g[x][y ^ m] = tasks;
+					q.push(mp(x, y ^ m));
+				}
+			}
+			if (g[c][d] == tasks)
+				cout << f[c][d] << endl;
+			else
+				cout << -1 << endl;
+		}
+	}
+		
 	return 0;
 }
