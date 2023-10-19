@@ -252,17 +252,73 @@ long long perm(long long n, long long m) {
 
 /* Code starts here */
 
+int findl(vector<ll> &a, ll p) {
+	int l = 0, r = a.size() - 1;
+	while (l < r) {
+		int m = (l + r) / 2;
+		if (a[m] == p) r = m;
+		else if (a[m] > p) r = m - 1;
+		else l = m + 1;
+	}
+	return l;
+}
+
+int findr(vector<ll> &a, ll p) {
+	int l = 0, r = a.size() - 1;
+	while (l < r) {
+		int m = (l + r + 1) / 2;
+		if (a[m] == p) l = m;
+		else if (a[m] > p) r = m - 1;
+		else l = m + 1;
+	}
+	return l;
+}
+
+int count(vector<ll> &a, ll p) {
+	int l = findl(a, p);
+	int r = findr(a, p);
+	if (l >= 0 && r >= 0 && l < len(a) && r < len(a) && a[l] == p && a[r] == p)
+		return r - l + 1;
+	return 0;
+}
+
 int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-	freopen(".in", "r", stdin);
+	freopen("F.in", "r", stdin);
 	// freopen(".out", "w", stdout);
 #endif
 
 	int tasks; cin >> tasks;
 	while (tasks --) {
-
+		int n; cin >> n;
+		vector<ll> a(n);
+		for (int i = 0; i < n; i++) {
+			cin >> a[i];
+		}
+		sort(a.begin(), a.end());
+		int m; cin >> m;
+		while (m --) {
+			ll x, y; cin >> x >> y;
+			if (x * x - 4 * y >= 0) {
+				ll p = (x + sqrt(x * x - 4 * y)) / 2;
+				ll q = (x - sqrt(x * x - 4 * y)) / 2;
+				if (p + q == x && p * q == y) {
+					if (p == q) {
+						cout << 1LL * count(a, p) * (count(a, p) - 1) / 2 << ' ';
+					}
+					else {
+						cout << 1LL * count(a, p) * count(a, q) << ' ';
+					}
+				}
+				else {
+					cout << 0 << ' ';
+				}
+			}
+			else cout << 0 << ' ';
+		}
+		cout << endl;
 	}
 		
 	return 0;

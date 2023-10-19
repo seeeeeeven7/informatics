@@ -256,13 +256,39 @@ int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-	freopen(".in", "r", stdin);
+	freopen("E.in", "r", stdin);
 	// freopen(".out", "w", stdout);
 #endif
 
 	int tasks; cin >> tasks;
 	while (tasks --) {
-
+		ll n; cin >> n;
+		vector<pair<ll, ll>> a;
+		for (ll i = 0; i < n; i++) {
+			ll j; cin >> j;
+			a.pb(mp(j, i));
+		}
+		sort(a.begin(), a.end());
+		ll score = n, m = n;
+		for (ll i = 0, l = -1; i + 1 < n; i++)
+			if (a[i].fi != a[i + 1].fi) {
+				m -= (i - l);
+				score += m * (a[i + 1].fi - a[i].fi);
+				l = i;
+			}
+		vector<ll> ans(n);
+		for (ll i = 0, l = -1, s = 0; i < n; i++)
+			if (i == n - 1 || a[i].fi != a[i + 1].fi) {
+				for (ll k = l + 1; k <= i; k++) 
+					ans[a[k].se] = score;
+				if (i + 1 < n) {
+					s += (i - l);
+					score += (2 * s - n) * (a[i + 1].fi - a[i].fi);
+				}
+				l = i;
+			}
+		for (int i = 0; i < len(ans); i++) cout << ans[i] << ' ';
+		cout << endl;
 	}
 		
 	return 0;

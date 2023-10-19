@@ -252,17 +252,35 @@ long long perm(long long n, long long m) {
 
 /* Code starts here */
 
+void work(string s) {
+	int j = 0;
+	for (int i = s.length() - 1, l = s.length(); i >= 0; i--) {
+		if (s[i] - '0' + j >= 5) {
+			j = 1;
+			for (int k = i; k < l; k++) s[k] = '0';
+			l = i;
+		}
+		else {
+			s[i] = s[i] + j;
+			j = 0;
+		}
+	}
+	if (j == 1) cout << 1;
+	cout << s << endl;
+}
+
 int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-	freopen(".in", "r", stdin);
+	freopen("B.in", "r", stdin);
 	// freopen(".out", "w", stdout);
 #endif
 
 	int tasks; cin >> tasks;
 	while (tasks --) {
-
+		string s; cin >> s;
+		work(s);
 	}
 		
 	return 0;

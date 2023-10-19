@@ -256,13 +256,23 @@ int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-	freopen(".in", "r", stdin);
+	freopen("C.in", "r", stdin);
 	// freopen(".out", "w", stdout);
 #endif
 
 	int tasks; cin >> tasks;
 	while (tasks --) {
-
+		int n; cin >> n;
+		vector<int> a(n * (n - 1) / 2);
+		for (int i = 0; i < n * (n - 1) / 2; i++) cin >> a[i];
+		sort(a.begin(), a.end());
+		vector<int> ans;
+		for (int i = 0, j = 0; i + 1 < n; i++) {
+			ans.pb(a[j]);
+			j += (n - 1 - i);
+		}
+		ans.pb(ans[ans.size() - 1]);
+		print1d(ans);
 	}
 		
 	return 0;

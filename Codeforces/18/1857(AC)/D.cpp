@@ -256,13 +256,24 @@ int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-	freopen(".in", "r", stdin);
+	freopen("D.in", "r", stdin);
 	// freopen(".out", "w", stdout);
 #endif
 
 	int tasks; cin >> tasks;
 	while (tasks --) {
-
+		int n; cin >> n;
+		vector<int> a(n), b(n);
+		for (int i = 0; i < n; i++) cin >> a[i];
+		for (int i = 0; i < n; i++) cin >> b[i];
+		for (int i = 0; i < n; i++) a[i] -= b[i];
+		int m = a[0];
+		for (int i = 0; i < n; i++) m = max(m, a[i]);
+		int ans = 0;
+		for (int i = 0; i < n; i++) if (m == a[i]) ans ++;
+		cout << ans << endl;
+		for (int i = 0; i < n; i++) if (m == a[i]) cout << i + 1 << ' ';
+		cout << endl;
 	}
 		
 	return 0;

@@ -256,13 +256,20 @@ int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-	freopen(".in", "r", stdin);
+	// freopen(".in", "r", stdin);
 	// freopen(".out", "w", stdout);
 #endif
 
 	int tasks; cin >> tasks;
 	while (tasks --) {
-
+		int n; cin >> n;
+		int c1 = 0;
+		for (int i = 0; i < n; i++) {
+			int j; cin >> j;
+			if (j % 2 == 1) c1 ++;
+		}
+		if (c1 % 2 == 1) cout << "NO" << endl;
+		else cout << "YES" << endl;
 	}
 		
 	return 0;

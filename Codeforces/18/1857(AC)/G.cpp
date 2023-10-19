@@ -13,7 +13,7 @@ using namespace std;
 
 /* Template starts here */
 
-long long mo = 1000000007; // This variable may be changed later
+long long mo = 998244353; // This variable may be changed later
 
 #define ll long long
 #define pb push_back
@@ -222,6 +222,7 @@ public:
 };
 
 long long pow(long long a, long long b) {
+	if (b == 0) return 1;
 	if (b == 1) return a;
 	long long c = pow(a, b / 2);
 	c = (c * c) % mo;
@@ -252,17 +253,47 @@ long long perm(long long n, long long m) {
 
 /* Code starts here */
 
+void find(vector<ll> &f, ll x) {
+	if (f[x] == x) return;
+	find(f, f[x]);
+	f[x] = f[f[x]];
+}
+
 int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-	freopen(".in", "r", stdin);
+	freopen("G.in", "r", stdin);
 	// freopen(".out", "w", stdout);
 #endif
 
 	int tasks; cin >> tasks;
 	while (tasks --) {
-
+		ll n, k; cin >> n >> k;
+		vector<vector<ll>> a;
+		for (ll i = 1; i < n; i++) {
+			ll u, v, w; cin >> u >> v >> w;
+			vector<ll> b;
+			b.pb(w); b.pb(u); b.pb(v);
+			a.pb(b);
+		}
+		vector<ll> f(n + 1);
+		for (int i = 1; i <= n; i++)
+			f[i] = i;
+		vector<ll> g(n + 1, 1);
+		sort(a.begin(), a.end());
+		ll ans = 1;
+		for (auto b : a) {
+			ll u = b[1], v = b[2], w = b[0];
+			// cout << w << ' ' << u << ' ' << v << endl;
+			find(f, u); 
+			find(f, v);
+			// cout << max(0LL, k - w) + 1 << ' ' << g[f[u]] * g[f[v]] - 1 << endl;
+			ans = (ans * pow(max(0LL, k - w) + 1, g[f[u]] * g[f[v]] - 1)) % mo;
+			g[f[v]] += g[f[u]];
+			f[f[u]] = f[v];
+		}
+		cout << ans << endl;
 	}
 		
 	return 0;
