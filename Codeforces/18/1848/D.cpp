@@ -256,12 +256,33 @@ int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-	freopen(".in", "r", stdin);
+	freopen("D.in", "r", stdin);
 	// freopen(".out", "w", stdout);
 #endif
 
 	int tasks; cin >> tasks;
 	while (tasks --) {
+		ll n, m; cin >> n >> m;
+		if (n % 10 == 0) cout << n * m << endl;
+		else if (n % 5 == 0) cout << max(n * m, (n + n % 10) * (m - 1)) << endl;
+		else {
+			ll ans = n * m;
+			n = n + n % 10; m = m - 1;
+			ans = max(ans, n * m);
+			for (int k = 0; k < 4; k++) {
+				ll i = (5 * m - n) / 40;
+				// cout << n << ' ' << m << ' ' << i << endl;
+				
+				for (ll j = max(i - 1, 0LL); j <= min(max(i + 1, 0LL), m / 4); j++) {
+					ll nj = n + 20 * j;
+					ll mj = m - 4 * j;
+					ans = max(ans, nj * mj);
+				}
+				n = n + n % 10;
+				m = m - 1;
+			}
+			cout << ans << endl;
+		}
 
 	}
 		

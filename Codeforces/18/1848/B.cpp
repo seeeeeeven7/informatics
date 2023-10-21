@@ -256,13 +256,47 @@ int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-	freopen(".in", "r", stdin);
+	freopen("B.in", "r", stdin);
 	// freopen(".out", "w", stdout);
 #endif
 
 	int tasks; cin >> tasks;
 	while (tasks --) {
-
+		int n, k; cin >> n >> k;
+		vector<int> p(k + 1, 0);
+		vector<int> m1(k + 1, -1);
+		vector<int> m2(k + 1, -1);
+		for (int i = 1; i <= n; i++) {
+			int c; cin >> c;
+			int j = p[c]; p[c] = i;
+			if (i - j - 1 > m1[c]) {
+				m2[c] = m1[c];
+				m1[c] = i - j - 1;
+			}
+			else if (i - j - 1> m2[c]) {
+				m2[c] = i - j - 1;
+			}
+		}
+		for (int c = 1; c <= k; c++) {
+			int j = p[c];
+			if (n - j > m1[c]) {
+				m2[c] = m1[c];
+				m1[c] = n - j ;
+			}
+			else if (n - j > m2[c]) {
+				m2[c] = n - j;
+			}
+		}
+		int ans = n;
+		for (int c = 1; c <= k; c++) {
+			if (m2[c] == -1) {
+				ans = min(ans, m1[c] / 2);
+			}
+			else {
+				ans = min(ans, max(m1[c] / 2, m2[c]));
+			}
+		}
+		cout << ans << endl;
 	}
 		
 	return 0;

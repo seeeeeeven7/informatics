@@ -252,17 +252,44 @@ long long perm(long long n, long long m) {
 
 /* Code starts here */
 
+int f(int a, int b) {
+	// cout << a << ' ' << b << endl;
+	if (a == 0) return 0;
+	if (a == b || b == 0) return (f(b, abs(a - b)) + 1) % 3;
+	if (a < b) {
+		if ((b / a) % 2 == 0) return f(a, b % a);
+		else return (f(b % a, a) + 2) % 3;
+	}
+	else {
+		if ((a / b) % 2 == 0) return f(a % b, b);
+		else return (f(b, a % b) + 1) % 3;
+	}
+}
+
 int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-	freopen(".in", "r", stdin);
+	freopen("C.in", "r", stdin);
 	// freopen(".out", "w", stdout);
 #endif
 
 	int tasks; cin >> tasks;
 	while (tasks --) {
-
+		int n; cin >> n;
+		vector<int> a(n), b(n);
+		for (int i = 0; i < n; i++) cin >> a[i];
+		for (int i = 0; i < n; i++) cin >> b[i];
+		vector<int> c(3, 0);
+		for (int i = 0; i < n; i++)
+			if (a[i] == 0 && b[i] == 0) {
+				c[0] ++; c[1] ++; c[2] ++;
+			}
+			else {
+				c[f(a[i], b[i])] ++;
+			}
+		if (c[0] == n || c[1] == n || c[2] == n) cout << "YES" << endl;
+		else cout << "NO" << endl;
 	}
 		
 	return 0;

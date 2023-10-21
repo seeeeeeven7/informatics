@@ -262,7 +262,7 @@ int main() {
 
 	int tasks; cin >> tasks;
 	while (tasks --) {
-
+		
 	}
 		
 	return 0;
