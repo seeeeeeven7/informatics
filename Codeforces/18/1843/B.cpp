@@ -15,7 +15,6 @@ using namespace std;
 
 long long mo = 1000000007; // This variable may be changed later
 
-#define int long long
 #define ll long long
 #define pb push_back
 #define fi first
@@ -253,17 +252,33 @@ long long perm(long long n, long long m) {
 
 /* Code starts here */
 
-int32_t main() {
+int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-	freopen(".in", "r", stdin);
+	freopen("B.in", "r", stdin);
 	// freopen(".out", "w", stdout);
 #endif
 
 	int tasks; cin >> tasks;
 	while (tasks --) {
-
+		int n; cin >> n;
+		vector<ll> a(n);
+		for (int i = 0; i < n; i++) cin >> a[i];
+		ll ans = 0, ans1 = 0, j = 0;
+		for (int i = 0; i < n; i++) {
+			if (a[i] > 0) {
+				if (j > 0) {
+					ans1 ++;
+					j = 0;
+				}
+			}
+			if (a[i] < 0)
+				j ++;
+			ans += abs(a[i]);
+		}
+		if (j > 0) ans1 ++;
+		cout << ans << ' ' << ans1 << endl;
 	}
 		
 	return 0;

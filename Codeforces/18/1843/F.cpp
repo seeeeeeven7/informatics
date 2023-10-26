@@ -257,13 +257,38 @@ int32_t main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-	freopen(".in", "r", stdin);
+	freopen("F.in", "r", stdin);
 	// freopen(".out", "w", stdout);
 #endif
 
 	int tasks; cin >> tasks;
 	while (tasks --) {
-
+		int q; cin >> q;
+		vector<vector<int>	> a(2, 0);
+		while (q --) {
+			string op; cin >> op;
+			if (op == "+") {
+				int v, x; cin >> v >> x;
+				
+				s.pb(s[v] + x);
+				fu.pb(max(fu[v], s[v] + x));
+				fd.pb(min(fd[v], s[v] + x));
+				gu.pb(max(gu[v], s[v] + x - fd[v]));
+				gd.pb(min(gd[v], s[v] + x - fu[v]));
+				// cout << fu[len(fu) - 1] << ' ' << fd[len(fd) - 1] << ' ' << gu[len(gu) - 1] << ' ' << gd[len(gd) - 1] << endl;
+			}
+			if (op == "?") {
+				int u, v, k; cin >> u >> v >> k;
+				if ((k <= gu[u] && k >= gd[u]) || 
+					(k <= gu[v] && k >= gd[v]) || 
+					(k <= fu[u] && k >= fd[u]) || 
+					(k <= fu[v] && k >= fd[v]) || 
+					(k <= fu[u] + fu[v] - 1 && k >= fd[u] + fd[v] - 1) || 
+					(k == 0)) 
+					cout << "YES" << endl;
+				else cout << "NO" << endl;
+			}
+		}
 	}
 		
 	return 0;

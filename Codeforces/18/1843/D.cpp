@@ -15,7 +15,6 @@ using namespace std;
 
 long long mo = 1000000007; // This variable may be changed later
 
-#define int long long
 #define ll long long
 #define pb push_back
 #define fi first
@@ -253,17 +252,41 @@ long long perm(long long n, long long m) {
 
 /* Code starts here */
 
-int32_t main() {
+void dfs(vector<int> &f, vector<vector<int>> &g, int fa, int i) {
+	f[i] = 0;
+	for (int j : g[i]) {
+		if (j != fa) {
+			dfs(f, g, i, j);
+			f[i] += f[j];
+		}
+	}
+	if (f[i] == 0) f[i] = 1;
+}
+
+int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-	freopen(".in", "r", stdin);
+	freopen("D.in", "r", stdin);
 	// freopen(".out", "w", stdout);
 #endif
 
 	int tasks; cin >> tasks;
 	while (tasks --) {
-
+		int n; cin >> n;
+		vector<vector<int>> g(n + 1);
+		for (int i = 1; i < n; i++) {
+			int u, v; cin >> u >> v;
+			g[u].pb(v);
+			g[v].pb(u);
+		}
+		vector<int> f(n + 1, 0);
+		dfs(f, g, 0, 1);
+		int m; cin >> m;
+		while (m --) {
+			int u, v; cin >> u >> v;
+			cout << 1LL * f[u] * f[v] << endl;
+		}
 	}
 		
 	return 0;

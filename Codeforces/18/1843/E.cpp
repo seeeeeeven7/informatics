@@ -15,7 +15,6 @@ using namespace std;
 
 long long mo = 1000000007; // This variable may be changed later
 
-#define int long long
 #define ll long long
 #define pb push_back
 #define fi first
@@ -253,17 +252,45 @@ long long perm(long long n, long long m) {
 
 /* Code starts here */
 
-int32_t main() {
+int main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-	freopen(".in", "r", stdin);
+	freopen("E.in", "r", stdin);
 	// freopen(".out", "w", stdout);
 #endif
 
 	int tasks; cin >> tasks;
 	while (tasks --) {
-
+		int n, m; cin >> n >> m;
+		vector<int> l(m), r(m);
+		for (int i = 0; i < m; i++) cin >> l[i] >> r[i];
+		int q; cin >> q;
+		vector<int> x(q);
+		for (int i = 0; i < q; i++) cin >> x[i];
+		int ansl = 1, ansr = q;
+		while (ansl < ansr) {
+			int ansm = (ansl + ansr) / 2;
+			vector<int> a(n + 1, 0);
+			for (int i = 0; i < ansm; i++) a[x[i]] = 1;
+			for (int i = 1; i <= n; i++) a[i] += a[i - 1];
+			// cout << ansl << ' '<< ansr << ' ' << ansm << ' '; print1d(a);
+			bool valid = false;
+			for (int i = 0; i < m; i++)
+				if (a[r[i]] - a[l[i] - 1] > (r[i] - l[i] + 1) / 2)
+					valid = true;
+			if (valid) ansr = ansm;
+			else ansl = ansm + 1;
+		}
+		vector<int> a(n + 1, 0);
+		for (int i = 0; i < ansl; i++) a[x[i]] = 1;
+		for (int i = 1; i <= n; i++) a[i] += a[i - 1];
+		bool valid = false;
+		for (int i = 0; i < m; i++)
+			if (a[r[i]] - a[l[i] - 1] > (r[i] - l[i] + 1) / 2)
+				valid = true;
+		if (valid) cout << ansl << endl;
+		else cout << -1 << endl;
 	}
 		
 	return 0;
