@@ -253,17 +253,95 @@ long long perm(long long n, long long m) {
 
 /* Code starts here */
 
+vector<pii> s1, sN;
+
+void split1(vector<int> &a, int l, int r) {
+	for (int i = l, last1 = -1, lastN = -1; i <= r; i++) {
+		if (a[i] == 1) {
+			if (last1 == -1) last1 = i;
+			if (i == r || a[i + 1] != 1) {
+				s1.pb(mp(last1, i));
+				last1 = -1;
+			}
+		}
+		else {
+			if (lastN == -1) lastN = i;
+			if (i == r || a[i + 1] == 1) {
+				sN.pb(mp(lastN, i));
+				lastN = -1;
+			}
+		}
+	}
+}
+
+void split0(vector<int> &a) {
+	int n = len(a);
+	for (int i = 0, j = 0; i < n; i++) {
+		if (i == n - 1 || gcd(a[i], a[i + 1]) != 1) {
+			split1(a, j, i);
+			j = i + 1;
+		}
+	}
+}
+
 int32_t main() {
 	ios_sync_false;
 	 	
 #ifndef ONLINE_JUDGE
-	freopen(".in", "r", stdin);
+	freopen("E.in", "r", stdin);
 	// freopen(".out", "w", stdout);
 #endif
 
 	int tasks; cin >> tasks;
 	while (tasks --) {
-
+		int n, k; cin >> n >> k;
+		vector<int> a(n);
+		for (int i = 0; i < n; i++) cin >> a[i];
+		int ans = 0;
+		for (int i = 1; i < n; i++)
+			if (gcd(a[i], a[i - 1]) == 1)
+				ans ++;
+		s1.clear();
+		sN.clear();
+		split0(a);
+		// cout << "S1" << endl;
+		// for (auto p : s1) cout << p.fi << ' ' << p.se << endl;
+		// cout << "SN" << endl;
+		// for (auto p : sN) cout << p.fi << ' ' << p.se << endl;
+		// cout << ans << endl;
+		int count11 = 0;
+		for (auto p : sN) {
+			int l = p.fi, r = p.se;
+			int c = min(k, (r - l) / 2);
+			ans = ans - c * 2;
+			k = k - c;
+			count11 += (r - l) % 2;
+		}
+		sort(s1.begin(), s1.end(), [n](pii &p, pii &q) {
+			return (p.se - p.fi + 2 - (p.fi == 0) - (p.se == n - 1)) * (q.se - q.fi + 1) >
+				   (q.se - q.fi + 2 - (q.fi == 0) - (q.se == n - 1)) * (p.se - p.fi + 1) ;
+		});
+		for (auto p : s1) {
+			int l = p.fi, r = p.se;
+			// cout << l << ' ' << r << ' ' << (r - l + 2 - (l == 0) - (r == n - 1)) << endl;
+			if (k >= r - l + 1) {
+				ans = ans - (r - l + 2 - (l == 0) - (r == n - 1));
+				k = k - (r - l + 1);
+			}
+			else {
+				if (l != 0 || r != n - 1) {
+					ans = ans - k;
+					k = k - k;
+				}
+				else {
+					ans = ans - (k - 1);
+					k = k - k;
+				}
+			}
+		}
+		int c = min(k, count11);
+		ans = ans - c;
+		cout << ans << endl;
 	}
 		
 	return 0;
