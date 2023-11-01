@@ -88,7 +88,13 @@ double tri_sum(int x1, int y1, int x2, int y2, int x3, int y3) {
 	return sqrt(p * (p - l1) * (p - l2) * (p - l3));
 }
 
-template<class T> void print2d(vector<vector<T> > &a) {
+template<class T> void print1d(vector<T> &a) {
+	for (T i : a) 
+		cout << i << ' ';
+	cout << endl;
+}
+
+template<class T> void print2d(vector<vector<T>> &a) {
 	cout << "---------" << endl;
 	for (int i = 0; i < a.size(); i++) {
 		for (int j = 0; j < a[i].size(); j++) {
@@ -148,11 +154,6 @@ void print(vector<int> a) {
 	for (int i = a.size() - 1; i >= 0; i--) cout << a[i];
 }
 
-template<class T> void print1d(vector<T> &a) {
-	for (T i : a) 
-		cout << i << ' ';
-	cout << endl;
-}
 
 long long cross(pair<long long, long long> a, pair<long long, long long> b, pair<long long, long long> c) {
 	return (b.first - a.first) * (c.second - a.second) - (c.first - a.first) * (b.second - a.second);
@@ -250,7 +251,6 @@ long long comb(long long n, long long m) {
 long long perm(long long n, long long m) {
 	return fac(n) * vers(fac(m)) % mo;
 }
-
 
 /* Code starts here */
 
