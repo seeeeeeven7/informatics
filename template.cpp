@@ -222,23 +222,24 @@ public:
 	}
 };
 
-long long pow(long long a, long long b) {
+int pow(int a, int b) {
+	if (b == 0) return 1;
 	if (b == 1) return a;
-	long long c = pow(a, b / 2);
+	int c = pow(a, b / 2);
 	c = (c * c) % mo;
 	if (b & 1) c = (c * a) % mo;
 	return c;
 }
 
-vector<long long> fac_f(1, 1);
-long long fac(long long n) {
-	while (fac_f.size() <= (unsigned long long) n) {
-		fac_f.push_back(fac_f[fac_f.size() - 1] * fac_f.size() % mo);
+vector<int> fac_f(1, 1);
+int fac(int n) {
+	while (len(fac_f) <= n) {
+		fac_f.pb(fac_f[len(fac_f) - 1] * len(fac_f) % mo);
 	}
 	return fac_f[n];
 }
 
-long long vers(long long p) {
+int vers(int p) {
 	return pow(p, mo - 2);
 }
 
@@ -263,8 +264,31 @@ int32_t main() {
 
 	int tasks; cin >> tasks;
 	while (tasks --) {
-
+		
 	}
 		
 	return 0;
+
+
 }
+
+/* 
+
+设置精度
+cout << fixed; cout.precision(6);
+
+设置宽度
+cout.width(5);
+
+设置填充
+cout.width(5); cout.fill('*');
+
+优先队列的比较函数
+struct Compare {
+    bool operator()(int a, int b) {
+        // 自定义比较逻辑，这里是从大到小排列
+        return a < b;
+    }
+};
+
+*/
