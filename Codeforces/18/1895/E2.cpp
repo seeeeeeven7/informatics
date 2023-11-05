@@ -233,7 +233,8 @@ int32_t main() {
 		}
 		for (int i = 0; i < m; i++) {
 			int y = qry(a, t - by[i]);
-			nex[t + by[i]] = y;
+			if (y > 0)
+				nex[t + by[i]] = y;
 		}
 		for (int i = 0; i < n; i++) {
 			sub(a, t - ax[i] + 1);
@@ -244,7 +245,8 @@ int32_t main() {
 		}
 		for (int i = 0; i < n; i++) {
 			int y = qry(b, t - ay[i]);
-			nex[ay[i]] = t + y;
+			if (y > 0)
+				nex[ay[i]] = t + y;
 		}
 		for (int i = 0; i < m; i++) {
 			sub(b, t - bx[i] + 1);

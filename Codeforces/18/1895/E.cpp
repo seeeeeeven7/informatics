@@ -183,24 +183,7 @@ int perm(int n, int m) {
 
 
 const int t = 1000000;
-int nex[2 * t + 1], deg[2 * t + 1], cnt[2 * t + 1];
-int a[t + 1], b[t + 1];
-
-void add(int a[], int x, int y) {
-	while (x <= t) {
-		a[x] = max(a[x], y);
-		x = x + (x & -x);
-	}
-}
-
-int qry(int a[], int x) {
-	int ret = 0;
-	while (x > 0) {
-		ret = max(ret, a[x]);
-		x = x - (x & -x);
-	}
-	return ret;
-}
+int nex[2 * t + 10], deg[2 * t + 10], cnt[2 * t + 10];
 
 int32_t main() {
 	ios_sync_false;
@@ -212,9 +195,6 @@ int32_t main() {
 
 	int tasks; cin >> tasks;
 	while (tasks --) {
-		// print1d(nex);
-		// print1d(deg);
-		// print1d(cnt);
 		int n; cin >> n;
 		vector<int> ax(n), ay(n);
 		for (int i = 0; i < n; i++) cin >> ax[i];
@@ -224,22 +204,45 @@ int32_t main() {
 		for (int i = 0; i < m; i++) cin >> bx[i];
 		for (int i = 0; i < m; i++) cin >> by[i];
 
-		memset(a, 0, sizeof(a));
-		for (int i = 0; i < n; i++) {
-			add(a, t - ax[i] + 1, ay[i]);
+		vector<int> ai(n);
+		for (int i = 0; i < n; i++) ai[i] = i;
+		vector<int> bi(m);
+		for (int i = 0; i < m; i++) bi[i] = i;
+
+		sort(ai.begin(), ai.end(), [&ay](int i, int j) {
+			return ay[i] > ay[j];
+		});
+		sort(bi.begin(), bi.end(), [&bx](int i, int j) {
+			return bx[i] > bx[j];
+		});
+
+		int j = 0, y = 0;
+		for (int i : ai) {
+			while (j < m && bx[bi[j]] > ay[i]) {
+				y = max(y, by[bi[j]]);
+				j ++;
+			}
+			if (y > 0)
+				nex[ay[i]] = t + y;
 		}
-		for (int i = 0; i < m; i++) {
-			int y = qry(a, t - by[i]);
-			nex[t + by[i]] = y;
+
+		sort(ai.begin(), ai.end(), [&ax](int i, int j) {
+			return ax[i] > ax[j];
+		});
+		sort(bi.begin(), bi.end(), [&by](int i, int j) {
+			return by[i] > by[j];
+		});
+
+		j = 0; y = 0;
+		for (int i : bi) {
+			while (j < n && ax[ai[j]] > by[i]) {
+				y = max(y, ay[ai[j]]);
+				j++;
+			}
+			if (y > 0)
+				nex[t + by[i]] = y;
 		}
-		memset(b, 0, sizeof(b));
-		for (int i = 0; i < m; i++) {
-			add(b, t - bx[i] + 1, by[i]);
-		}
-		for (int i = 0; i < n; i++) {
-			int y = qry(b, t - ay[i]);
-			nex[ay[i]] = t + y;
-		}
+
 		set<int> idx;
 		for (int i = 0; i < n; i++) cnt[ay[i]] ++;
 		for (int i = 0; i < n; i++) idx.insert(ay[i]);
@@ -247,7 +250,8 @@ int32_t main() {
 
 		queue<int> q;
 		for (int i : idx) {
-			deg[nex[i]] ++;
+			if (nex[i] > 0)
+				deg[nex[i]] ++;
 		}
 		for (int i : idx) 
 			if (deg[i] == 0) {
@@ -280,6 +284,14 @@ int32_t main() {
 		}
 
 		cout << ans1 << ' ' << ans2 << ' ' << ans3 << endl;
+
+		for (int i = 0; i < n; i++) nex[ay[i]] = 0;
+		for (int i = 0; i < m; i++) nex[t + by[i]] = 0;
+
+		// for (int i = 0; i <= 2 * t; i++) cout << nex[i] << ' '; cout << endl;
+		// for (int i = 0; i <= 2 * t; i++) cout << deg[i] << ' '; cout << endl;
+		// for (int i = 0; i <= 2 * t; i++) cout << cnt[i] << ' '; cout << endl;
+
 	}
 		
 	return 0;
